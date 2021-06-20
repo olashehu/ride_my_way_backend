@@ -1,6 +1,9 @@
-import { createTables, insertIntoTables } from './queryFunctions';
+import {
+  dropTables,
+  createTables
+} from './queryFunctions';
 
 (async () => {
+  await dropTables();
   await createTables();
-  await insertIntoTables();
 })();
