@@ -4,7 +4,7 @@ import Model from '../models/model';
 const secretKey = process.env.SECRET_KEY;
 const driverModel = new Model('drivers');
 
-export const addDriver = async (req, res) => {
+const addDriver = async (req, res) => {
   const {
     firstName, lastName, address, phone, email, password
   } = req.body;
@@ -17,7 +17,7 @@ export const addDriver = async (req, res) => {
       id,
       email
     }, secretKey, {
-      expiresIn: '24h'
+      expiresIn: '24h',
     });
     res.status(200).json({
       id,
@@ -29,3 +29,31 @@ export const addDriver = async (req, res) => {
     res.status(500).json(err);
   }
 };
+
+export const editDriverProfile = async (req, res) => {
+  const { firstName } = req.body;
+  const { id } = req.user.driver;
+  try {
+    const data = await driverModel.update(`first_name = '${firstName}' WHERE "id" = '${id}'`);
+    if (!data.rowCount){
+      return res.status(400).json({ Message: 'Bad request' })
+    }
+    return res.status(200).json({message: 'Profile updated successfully'});
+  } catch (error) {
+    res.json({ message: error.message });
+  }
+};
+
+export const getAllDriver = async (req, res) => {
+  try {
+    const data = await driverModel.select('*');
+    if (!data.rowCount) {
+      return res.status(400).json({ message: 'Bad request' });
+    }
+    return res.status(200).json({ message: data.rows });
+  } catch (error) {
+    return res.status(400).json({ message: error.stack });
+  }
+};
+
+export default addDriver;

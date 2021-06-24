@@ -6,6 +6,15 @@ import Model from '../models/model';
 const secretKey = process.env.SECRET_KEY;
 const userModel = new Model('users');
 const driverModel = new Model('drivers');
+
+/**
+ * 
+ * @param {object} req -request
+ * @param {object} res - response
+ * @param {} next the next middleware in the stack
+ * @returns it return a valid data if all the requirement is pass
+ * otherwise reject it
+ */
 export const validateCreateUser = async (req, res, next) => {
   const userSchema = {
     firstName: Joi.string().required(),
@@ -26,6 +35,13 @@ export const validateCreateUser = async (req, res, next) => {
   return next();
 };
 
+/**
+ * 
+ * @param {object} req - request
+ * @param {object} res - response
+ * @param {*} next - it call the next middleware in the stack
+ * @returns 
+ */
 export const checkUserDetails = async (req, res, next) => {
   // Check if email and phone exist.
   const { email, phone } = req.body;
@@ -85,6 +101,13 @@ export const loginUser = async (req, res) => {
   }
 };
 
+/**
+ * 
+ * @param {object} req - request 
+ * @param {object} res - response
+ * @param {object} next - it call the next middleware in the route process chain
+ * @returns - it pass the driver information to the next middleware if valid
+ */
 export const checkDriverDetails = async (req, res, next) => {
   // Check if email and phone exist.
   const { email, phone } = req.body;
@@ -106,11 +129,18 @@ export const checkDriverDetails = async (req, res, next) => {
     }
     return next();
   } catch (error) {
-    res.send({ erroe: `${error.message}` });
+    res.send({ error: `${error.message}` });
   }
 };
 
 // Driver login endpoint
+/**
+ * 
+ * @param {object} req - request
+ * @param {object} res - response 
+ * @returns - it return driver object containning information details, 
+ a password if valid and hashed it.
+ */
 export const DriverLogin = async (req, res) => {
   const { password, email, } = req.body;
   try {
@@ -125,7 +155,7 @@ export const DriverLogin = async (req, res) => {
       res.status(400).send({ message: 'Password does correct' });
     }
     // if password is valid
-    const { id, first_name} = user.rows[0];
+    const { id, first_name } = user.rows[0];
     const driver = {
       id,
       first_name,
@@ -147,6 +177,12 @@ export const DriverLogin = async (req, res) => {
 };
 
 // function checking if user token is valid or expire.
+/**
+ * 
+ * @param {object} req - request bject
+ * @param {object} res - response object 
+ * @param {*} next - it call the next function in the route proccess chain
+ */
 export const isLoggedIn = (req, res, next) => {
   const token = req.headers.authorization;
   let tokenValue;
@@ -170,7 +206,6 @@ export const isLoggedIn = (req, res, next) => {
       });
     }
   } catch (error) {
-    // console.log(error);
     res.status(401).send({
       status: false,
       message: 'Authentication token is invalid or expired'

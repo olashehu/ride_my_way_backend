@@ -5,19 +5,19 @@ export const DriverRideHistoryPage = async (req, res) => {
   const { id } = req.user.driver;
   try {
     const data = await RideHistoryModel.select('*', `WHERE "driver_id" = '${id}'`);
-    res.status(200).json({ msg: data.rows });
+    res.status(200).json({ message: data.rows });
   } catch (err) {
     res.status(400).json({ msg: err.stack });
   }
 };
 
 export const UserRideHistoryPage = async (req, res) => {
-  const { id } = req.user;
+  const { id } = req.user.userData;
   try {
     const data = await RideHistoryModel.select('*', `WHERE "user_id" = '${id}'`);
-    res.status(200).json({ msg: data.rows });
+    res.status(200).json({ message: data.rows });
   } catch (err) {
-    res.status(400).json({ msg: err.stack });
+    res.status(400).json({ message: err.stack });
   }
 };
 

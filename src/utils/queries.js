@@ -53,12 +53,8 @@ VALUES('Nicolas', 'John', '2b john str ikeja lagos', '09099999999', 'nicolas@gma
 
 export const updateUsersTable = `
 UPDATE users
-SET first_name = 'Motunrayo'
+SET first_name = 'Mot'
 WHERE id = 2`;
-
-export const deleteUser = `
-DELETE FROM users
-WHERE id = 1`;
 
 export const referenceDriverID = 'ALTER TABLE ride_offer ADD FOREIGN KEY (driver_id) REFERENCES drivers(id)';
 export const driverIDInHistoryTable = 'ALTER TABLE ride_history ADD FOREIGN KEY (driver_id) REFERENCES drivers(id)';

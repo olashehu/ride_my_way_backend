@@ -10,10 +10,7 @@ import {
   createDriversTable,
   dropUsersTable,
   createUsersTable,
-  userIdReferenceUsersTable,
-  insertIntoTableUser,
-  updateUsersTable,
-  deleteUser
+  userIdReferenceUsersTable
 } from './queries';
 
 export const executeQueryArray = async arr => new Promise(async resolve => {
@@ -30,14 +27,6 @@ export const executeQueryArray = async arr => new Promise(async resolve => {
   resolve();
 });
 
-// export const executeQueryArray = async arr => new Promise(resolve =>{
-//   for (let index = 0; index < arr.lenght; index++){
-//     const sqlQuery = arr[index];
-//     await pool.query(sqlQuery);
-//   }
-//   resolve();
-// })
-
 export const dropTables = () => executeQueryArray([
   dropOfferTable,
   dropRideHistoryTable,
@@ -52,8 +41,5 @@ export const createTables = () => executeQueryArray([
   driverIDInHistoryTable,
   referenceDriverID,
   createUsersTable,
-  insertIntoTableUser,
-  updateUsersTable,
   userIdReferenceUsersTable,
-  deleteUser
 ]);
