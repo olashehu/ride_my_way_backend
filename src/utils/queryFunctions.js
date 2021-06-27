@@ -1,45 +1,59 @@
-import { pool } from '../models/pool';
+import pool from '../models/pool';
 import {
   dropOfferTable,
   createTableOffer,
-  referenceDriverID,
   dropRideHistoryTable,
   createTableRideHisory,
-  driverIDInHistoryTable,
   dropDriversTable,
   createDriversTable,
   dropUsersTable,
   createUsersTable,
-  userIdReferenceUsersTable
+  referenceOfferTable,
 } from './queries';
 
-export const executeQueryArray = async arr => new Promise(async resolve => {
-  // const stop = arr.length;
-//   arr.forEach(async (q, index) => {
-//       await pool.query(q);
-//       if (index + 1 === stop) resolve();
-//   });
+/**
+ *
+ * @param {parameter} queries - parameter represent each query of array
+ *
+ * @returns {obj} - it return an array of query and wait for each to finish
+ */
+export const executeQueryArray = async (queries) => {
+  const executeQuery = queries.map(async (query) => {
+    await pool.query(query);
+  });
+  await Promise.all(executeQuery);
+};
+
+// export const executeQueryArray = async (arr) => new Promise(async (resolve) => {
+//   for (const sqlQuery of arr) {
+//     await pool.query(sqlQuery);
+//   }
+//   resolve();
 // });
 
-  for (const sqlQuery of arr) {
-    await pool.query(sqlQuery);
-  }
-  resolve();
-});
+/**
+ * @returns {Promise} - when execute for the first time, it will drop all table listed
+ if exist.
+ */
+export const dropTables = async () => {
+  await executeQueryArray([
+    dropRideHistoryTable,
+    dropOfferTable,
+    dropDriversTable,
+    dropUsersTable
+  ]);
+};
 
-export const dropTables = () => executeQueryArray([
-  dropOfferTable,
-  dropRideHistoryTable,
-  dropDriversTable,
-  dropUsersTable
-]);
-
-export const createTables = () => executeQueryArray([
-  createDriversTable,
-  createTableOffer,
-  createTableRideHisory,
-  driverIDInHistoryTable,
-  referenceDriverID,
-  createUsersTable,
-  userIdReferenceUsersTable,
-]);
+/**
+ * @returns {promise}- when execute for the first time it will create all listed table
+ in the database
+ */
+export const createTables = async () => {
+  await executeQueryArray([
+    createUsersTable,
+    createDriversTable,
+    createTableRideHisory,
+    createTableOffer,
+    referenceOfferTable
+  ]);
+};

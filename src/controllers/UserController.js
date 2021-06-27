@@ -6,14 +6,16 @@ const secretKey = process.env.SECRET_KEY;
 
 /**
  * @param {object} req - request object
- * @param {object} res- response object
- * @return it returns a promise of user object and assign it a token
+ *
+ * @param {object} res - response object
+ *
+ * @return {obj} - it returns a promise of user object and assign it a token
  */
 export const addUsers = async (req, res) => {
   const {
     firstName, lastName, address, phone, email, password
   } = req.body;
-  const columns = 'first_name, last_name, address, phone, email, password';
+  const columns = '"firstName", "lastName", address, phone, email, password';
   // eslint-disable-next-line max-len
   const values = `'${firstName}', '${lastName}', '${address}', '${phone}', '${email}', '${password}'`;
   try {
@@ -39,14 +41,16 @@ export const addUsers = async (req, res) => {
 /**
  *
  * @param {object} req - request object
+ *
  * @param {object} res - response object
- * @returns it return a success message if the request is a login user
+ *
+ * @returns {obj} - it return a success message if the request is a login user
  */
 export const editUserProfile = async (req, res) => {
   const { firstName } = req.body;
   const { id } = req.user.userData;
   try {
-    const data = await userModel.update(`first_name = '${firstName}' WHERE "id" = ${id}`);
+    const data = await userModel.update(`"firstName" = '${firstName}' WHERE "id" = ${id}`);
     if (!data.rowCount) {
       return res.status(400).json({ Message: 'Bad request' });
     }
@@ -59,8 +63,10 @@ export const editUserProfile = async (req, res) => {
 /**
  *
  * @param {object} req - request
+ *
  * @param {object} res - response
- * @returns all user data in the database
+ *
+ * @returns {obj} - all user data in the database
  */
 export const getAllUser = async (req, res) => {
   try {

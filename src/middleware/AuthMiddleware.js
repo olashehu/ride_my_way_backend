@@ -8,11 +8,14 @@ const userModel = new Model('users');
 const driverModel = new Model('drivers');
 
 /**
- * 
+ *
  * @param {object} req -request
+ *
  * @param {object} res - response
- * @param {} next the next middleware in the stack
- * @returns it return a valid data if all the requirement is pass
+ *
+ * @param {obj} next - the next middleware in the stack
+ *
+ * @returns {obj} - it return a valid data if all the requirement is pass
  * otherwise reject it
  */
 export const validateCreateUser = async (req, res, next) => {
@@ -36,14 +39,16 @@ export const validateCreateUser = async (req, res, next) => {
 };
 
 /**
- * 
+ *
  * @param {object} req - request
+ *
  * @param {object} res - response
- * @param {*} next - it call the next middleware in the stack
- * @returns 
+ *
+ * @param {obj} next - it call the next middleware in the stack
+ *
+ * @returns {obj} -
  */
 export const checkUserDetails = async (req, res, next) => {
-  // Check if email and phone exist.
   const { email, phone } = req.body;
   try {
     const emailExists = await userModel.select('*', `WHERE "email" = '${email}'`);
@@ -67,24 +72,29 @@ export const checkUserDetails = async (req, res, next) => {
   }
 };
 
+/**
+ *
+ * @param {obj} req - request
+ *
+ * @param {obj} res - response
+ *
+ * @returns {obj} - return user object  id, firstName and a token
+ */
 export const loginUser = async (req, res) => {
   const { password, email } = req.body;
   try {
-    // Select user with req.body.email, if not exist send error
     const user = await userModel.select('*', `WHERE "email" = '${email}'`);
     if (!user.rowCount) {
       return res.status(400).send({ message: 'Email does not exist' });
     }
-    // compare crypted password and see if it match, if not match send error
     const passwordIsValid = await bcrypt.compare(password, user.rows[0].password);
     if (!passwordIsValid) {
       res.status(400).send({ message: 'Password does correct' });
     }
-    // if password is valid
-    const { id, first_name } = user.rows[0];
+    const { id, firstName } = user.rows[0];
     const userData = {
       id,
-      first_name
+      firstName
     };
     const token = jwt.sign({
       userData
@@ -92,7 +102,7 @@ export const loginUser = async (req, res) => {
       expiresIn: '24h'
     });
     return res.status(200).json({
-      msg: 'Welcome',
+      Message: 'Welcome',
       userData,
       token
     });
@@ -102,14 +112,17 @@ export const loginUser = async (req, res) => {
 };
 
 /**
- * 
- * @param {object} req - request 
+ * @description - it validate phone and email if they already exist in the database
+ *
+ * @param {object} req - request
+ *
  * @param {object} res - response
+ *
  * @param {object} next - it call the next middleware in the route process chain
- * @returns - it pass the driver information to the next middleware if valid
+ *
+ * @returns {object} - it pass the driver information to the next middleware if valid
  */
 export const checkDriverDetails = async (req, res, next) => {
-  // Check if email and phone exist.
   const { email, phone } = req.body;
   try {
     const emailExists = await driverModel.select('*', `WHERE "email" = '${email}'`);
@@ -133,32 +146,31 @@ export const checkDriverDetails = async (req, res, next) => {
   }
 };
 
-// Driver login endpoint
 /**
- * 
+ * @description - Driver login endpoint
+ *
  * @param {object} req - request
- * @param {object} res - response 
- * @returns - it return driver object containning information details, 
- a password if valid and hashed it.
+ *
+ * @param {object} res - response
+ *
+ * @return {object} - it return driver object containning data
+ * id, firstName and a token
  */
 export const DriverLogin = async (req, res) => {
   const { password, email, } = req.body;
   try {
-    // Select user with req.body.email, if not exist send error
     const user = await driverModel.select('*', `WHERE "email" = '${email}'`);
     if (!user.rowCount) {
       return res.status(400).send({ message: 'Email does not exist' });
     }
-    // compare crypted password and see if it match, if not match send error
     const passwordIsValid = await bcrypt.compare(password, user.rows[0].password);
     if (!passwordIsValid) {
       res.status(400).send({ message: 'Password does correct' });
     }
-    // if password is valid
-    const { id, first_name } = user.rows[0];
+    const { id, firstName } = user.rows[0];
     const driver = {
       id,
-      first_name,
+      firstName,
       email
     };
     const token = jwt.sign({
@@ -167,7 +179,6 @@ export const DriverLogin = async (req, res) => {
       expiresIn: '24h'
     });
     return res.status(200).json({
-      // message: 'welcome',
       driver,
       token
     });
@@ -176,19 +187,23 @@ export const DriverLogin = async (req, res) => {
   }
 };
 
-// function checking if user token is valid or expire.
 /**
- * 
+ * @description - function checking if user token is valid or expire.
+ *
  * @param {object} req - request bject
- * @param {object} res - response object 
- * @param {*} next - it call the next function in the route proccess chain
+ *
+ * @param {object} res - response object
+ *
+ * @param {object} next - it call the next function in the route proccess chain
+ *
+ * @return {object} - it return object of user with a sign token when user login
  */
 export const isLoggedIn = (req, res, next) => {
   const token = req.headers.authorization;
   let tokenValue;
   try {
     if (token) {
-      tokenValue = token.split(' ')[1];
+      [, tokenValue] = token.split(' ');
       const userData = jwt.verify(tokenValue, secretKey);
       req.user = userData;
       if (userData) {

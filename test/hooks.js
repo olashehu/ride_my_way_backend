@@ -3,10 +3,12 @@ import {
   createTables,
 } from '../src/utils/queryFunctions';
 
-before(async () => {
-  await createTables();
-});
-
+// eslint-disable-next-line no-undef
 after(async () => {
   await dropTables();
+});
+
+// eslint-disable-next-line no-undef
+before(async () => {
+  await createTables();
 });

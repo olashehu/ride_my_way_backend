@@ -3,7 +3,13 @@ import {
   createTables
 } from './queryFunctions';
 
-(async () => {
+const queryRun = async () => {
   await dropTables();
   await createTables();
-})();
+};
+queryRun();
+
+// (async () => {
+//
+//   await createTables();
+// })();

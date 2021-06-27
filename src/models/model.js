@@ -1,9 +1,13 @@
-import { pool } from './pool';
+import pool from './pool';
 /**
  *We create a model class whose constructor accept a database we
  wish to operate on
  */
 class Model {
+  /**
+   *
+   * @param {table} table -
+   */
   constructor(table) {
     this.pool = pool;
     this.table = table;
@@ -13,8 +17,10 @@ class Model {
   /**
  *
  * @param {object} columns -  columns we want to retrieve from
+ *
  * @param {object} clause - a condition such as WHERE, ON, GROUPBY etc
- * @returns it return a result of query which is a promise
+ *
+ * @returns {obj} - it return a result of query which is a promise
  */
   async select(columns, clause) {
     let query = `SELECT ${columns} FROM ${this.table} `;
@@ -24,9 +30,11 @@ class Model {
 
   /**
  *
- * @param {} columns - the table column
- * @param {} values - the values of the column
- * @returns it help us to insert data to the database and return a promise
+ * @param {obj} columns - the table column
+ *
+ * @param {obj} values - the values of the column
+ *
+ * @returns {obj} - it help us to insert data to the database and return a promise
  * of inserted data
  */
   async insertWithReturn(columns, values) {
@@ -41,18 +49,19 @@ class Model {
   /**
  *
  * @param {object} columns - name of the table row
- * @returns - a function that update our database
+ *
+ * @return {obj} - a function that update our database
  */
   async update(columns) {
     const query = `UPDATE ${this.table} SET ${columns}`;
-    console.log(query);
     return this.pool.query(query);
   }
 
   /**
  *
  * @param {object} clause - a cluse such as WHERE
- * @returns a function to delete a table if clause is not provided
+ *
+ * @return {obj} - a function to delete a table if clause is not provided
  */
   async deleteTableRow(clause) {
     const query = `DELETE FROM ${this.table} ${clause}`;
