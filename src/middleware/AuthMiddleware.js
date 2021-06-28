@@ -1,14 +1,12 @@
-import jwt from 'jsonwebtoken';
 import Joi from 'joi';
 import bcrypt from 'bcrypt';
 import Model from '../models/model';
+import assignToken from '../validations/validate';
 
-const secretKey = process.env.SECRET_KEY;
 const userModel = new Model('users');
 const driverModel = new Model('drivers');
 
 /**
- *
  * @param {object} req -request
  *
  * @param {object} res - response
@@ -96,11 +94,7 @@ export const loginUser = async (req, res) => {
       id,
       firstName
     };
-    const token = jwt.sign({
-      userData
-    }, secretKey, {
-      expiresIn: '24h'
-    });
+    const token = assignToken(userData);
     return res.status(200).json({
       Message: 'Welcome',
       userData,
@@ -173,57 +167,12 @@ export const DriverLogin = async (req, res) => {
       firstName,
       email
     };
-    const token = jwt.sign({
-      driver,
-    }, secretKey, {
-      expiresIn: '24h'
-    });
+    const token = assignToken(driver);
     return res.status(200).json({
       driver,
       token
     });
   } catch (error) {
     res.send(error.message);
-  }
-};
-
-/**
- * @description - function checking if user token is valid or expire.
- *
- * @param {object} req - request bject
- *
- * @param {object} res - response object
- *
- * @param {object} next - it call the next function in the route proccess chain
- *
- * @return {object} - it return object of user with a sign token when user login
- */
-export const isLoggedIn = (req, res, next) => {
-  const token = req.headers.authorization;
-  let tokenValue;
-  try {
-    if (token) {
-      [, tokenValue] = token.split(' ');
-      const userData = jwt.verify(tokenValue, secretKey);
-      req.user = userData;
-      if (userData) {
-        next();
-      } else {
-        res.status(401).send({
-          status: false,
-          message: 'Authentication token is invalid or expired'
-        });
-      }
-    } else {
-      res.status(401).send({
-        status: false,
-        message: 'Authentication token does not exist'
-      });
-    }
-  } catch (error) {
-    res.status(401).send({
-      status: false,
-      message: 'Authentication token is invalid or expired'
-    });
   }
 };

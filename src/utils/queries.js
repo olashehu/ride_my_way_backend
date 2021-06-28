@@ -54,8 +54,11 @@ REFERENCES ride_offer(id)
 ON UPDATE CASCADE
 `;
 
+// eslint-disable-next-line max-len
 // export const referenceDriverID = 'ALTER TABLE ride_offer ADD FOREIGN KEY (driver_id) REFERENCES drivers(id)';
+// eslint-disable-next-line max-len
 // export const driverIDInHistoryTable = 'ALTER TABLE ride_history ADD FOREIGN KEY (driver_id) REFERENCES drivers(id)';
+// eslint-disable-next-line max-len
 // export const userIdReferenceUsersTable = 'ALTER TABLE ride_history ADD FOREIGN KEY (user_id) REFERENCES users(id)';
 
 export const dropUsersTable = 'DROP TABLE IF EXISTS users';

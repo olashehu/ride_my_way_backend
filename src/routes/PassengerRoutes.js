@@ -1,19 +1,12 @@
 import express from 'express';
 import { UserRideHistoryPage } from '../controllers/RideHistoryController';
-import {
-  addUsers,
-  editUserProfile
-} from '../controllers/UserController';
-import {
-  checkUserDetails,
-  isLoggedIn,
-  loginUser,
-  validateCreateUser
-} from '../middleware/AuthMiddleware';
+import { addUsers, editUserProfile } from '../controllers/UserController';
+import { checkUserDetails, loginUser, validateCreateUser } from '../middleware/AuthMiddleware';
+import { isLoggedIn } from '../validations/validate';
 
-const indexRouter = express.Router();
-indexRouter.post('/user/signup', validateCreateUser, checkUserDetails, addUsers);
-indexRouter.post('/user/login', loginUser);
-indexRouter.put('/user/profile-page', isLoggedIn, editUserProfile);
-indexRouter.get('/user/ride-history', isLoggedIn, UserRideHistoryPage);
-export default indexRouter;
+const passengerRoute = express.Router();
+passengerRoute.post('/user/signup', validateCreateUser, checkUserDetails, addUsers);
+passengerRoute.post('/user/login', loginUser);
+passengerRoute.put('/user/profile-page', isLoggedIn, editUserProfile);
+passengerRoute.get('/user/ride-history', isLoggedIn, UserRideHistoryPage);
+export default passengerRoute;

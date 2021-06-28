@@ -1,7 +1,8 @@
-import jwt from 'jsonwebtoken';
+// import jwt from 'jsonwebtoken';
 import Model from '../models/model';
+import assignToken from '../validations/validate';
 
-const secretKey = process.env.SECRET_KEY;
+// const secretKey = process.env.SECRET_KEY;
 
 const driverModel = new Model('drivers');
 
@@ -13,7 +14,7 @@ const driverModel = new Model('drivers');
  *
  * @return {obj} -
  */
-const addDriver = async (req, res) => {
+export const addDriver = async (req, res) => {
   const {
     firstName, lastName, address, phone, email, password
   } = req.body;
@@ -23,15 +24,13 @@ const addDriver = async (req, res) => {
   try {
     const data = await driverModel.insertWithReturn(columns, values);
     const { id } = data.rows[0];
-    const token = jwt.sign({
+    const driver = {
       id,
-      email
-    }, secretKey, {
-      expiresIn: '24h',
-    });
+      email: data.rows[0].email
+    };
+    const token = assignToken(driver);
     res.status(200).json({
-      id,
-      email,
+      driver,
       token,
       message: 'Account created successfully!'
     });
@@ -80,5 +79,3 @@ export const getAllDriver = async (req, res) => {
     return res.status(400).json({ message: error.stack });
   }
 };
-
-export default addDriver;

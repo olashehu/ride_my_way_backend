@@ -1,3 +1,4 @@
+import object from 'joi/lib/types/object';
 import pool from './pool';
 /**
  *We create a model class whose constructor accept a database we
@@ -47,14 +48,26 @@ class Model {
   }
 
   /**
+ * @param {obj} data - array od obect keys
  *
- * @param {object} columns - name of the table row
+ * @param {object} clause - 
  *
  * @return {obj} - a function that update our database
  */
-  async update(columns) {
-    const query = `UPDATE ${this.table} SET ${columns}`;
-    return this.pool.query(query);
+  async update(data, clause) {
+    let query = `UPDATE ${this.table} SET `;
+    const keys = Object.keys(data); // []
+    let sqlQuery;
+    for (const key in data) {
+      if (key === keys[keys.length - 1]) {
+        sqlQuery = `${key} = '${data[key]}' `;
+        query += `${sqlQuery}`;
+        query += `${clause}`;
+        return this.pool.query(query);
+      }
+      sqlQuery = `${key} = '${data[key]}', `;
+      query += `${sqlQuery}`;
+    }
   }
 
   /**
