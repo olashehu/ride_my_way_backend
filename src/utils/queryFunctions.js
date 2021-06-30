@@ -8,21 +8,30 @@ import {
   createDriversTable,
   dropUsersTable,
   createUsersTable,
-  referenceOfferTable,
+  refDriverIDFromHistory,
+  refUserIdFromHistory,
+  refDriverIDFromOffer
 } from './queries';
 
 /**
  *
- * @param {parameter} queries - parameter represent each query of array
+ * @param { arr } arr - parameter represent each query of array
  *
  * @returns {obj} - it return an array of query and wait for each to finish
  */
-export const executeQueryArray = async (queries) => {
-  const executeQuery = queries.map(async (query) => {
-    await pool.query(query);
-  });
-  await Promise.all(executeQuery);
-};
+export const executeQueryArray = async (arr) => new Promise(async (resolve) => {
+  for (const sqlQuery of arr) {
+    await pool.query(sqlQuery);
+  }
+  resolve();
+});
+
+// export const executeQueryArray = async (queries) => {
+//   const executeQuery = queries.map(async (query) => {
+//     await pool.query(query);
+//   });
+//   await Promise.all(executeQuery);
+// };
 
 /**
  * @description - This method await the execution of each table in the array
@@ -32,8 +41,8 @@ export const executeQueryArray = async (queries) => {
  */
 export const dropTables = async () => {
   await executeQueryArray([
-    dropRideHistoryTable,
     dropOfferTable,
+    dropRideHistoryTable,
     dropDriversTable,
     dropUsersTable
   ]);
@@ -51,6 +60,18 @@ export const createTables = async () => {
     createDriversTable,
     createTableRideHisory,
     createTableOffer,
-    referenceOfferTable
+  ]);
+};
+
+/**
+ * @description - This method will create the reference for a table
+ *
+ * @return { void }
+ */
+export const referenceTable = async () => {
+  await executeQueryArray([
+    refDriverIDFromOffer,
+    refDriverIDFromHistory,
+    refUserIdFromHistory
   ]);
 };

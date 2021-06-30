@@ -1,5 +1,5 @@
 export const createUsersTable = `
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   "firstName" VARCHAR NOT NULL,
   "lastName" VARCHAR NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS users (
 `;
 
 export const createDriversTable = `
-CREATE TABLE IF NOT EXISTS drivers (
+CREATE TABLE drivers (
   id SERIAL PRIMARY KEY,
   "firstName" VARCHAR(50) NOT NULL,
   "lastName" VARCHAR(50) NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS drivers (
 `;
 
 export const createTableOffer = `
-CREATE TABLE IF NOT EXISTS ride_offer (
+CREATE TABLE ride_offer (
   id SERIAL PRIMARY KEY,
   driver_id INT NOT NULL,
   destination VARCHAR(50) NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS ride_offer (
 `;
 
 export const createTableRideHisory = `
-CREATE TABLE IF NOT EXISTS ride_history (
+CREATE TABLE ride_history (
   id SERIAL PRIMARY KEY,
   driver_id INT NOT NULL,
   user_id INT NOT NULL,
@@ -46,23 +46,13 @@ CREATE TABLE IF NOT EXISTS ride_history (
   created_at TIMESTAMP DEFAULT NOW() NOT NULL
 )
 `;
-export const referenceOfferTable = `
-ALTER TABLE ride_history
-ADD CONSTRAINT offer_id
-FOREIGN KEY (offer_id)
-REFERENCES ride_offer(id)
-ON UPDATE CASCADE
-`;
 
-export const referenceDriverTable = `
-ALTER TABLE ride_offer
-ADD CONSTRAINT driver_id
-FOREIGN KEY (driver_id)
-REFERENCES ride_offer(id)
-`;
-
-// eslint-disable-next-line max-len
-// export const referenceDriverID = 'ALTER TABLE ride_offer ADD FOREIGN KEY (driver_id) REFERENCES drivers(id)';
+export const refDriverIDFromOffer = `
+ALTER TABLE ride_offer ADD FOREIGN KEY (driver_id) REFERENCES drivers(id)`;
+export const refDriverIDFromHistory = `
+ALTER TABLE ride_history ADD FOREIGN KEY (driver_id) REFERENCES drivers(id)`;
+export const refUserIdFromHistory = `
+ALTER TABLE ride_history ADD FOREIGN KEY (user_id) REFERENCES users(id)`;
 
 export const dropUsersTable = 'DROP TABLE IF EXISTS users';
 export const dropDriversTable = 'DROP TABLE IF EXISTS drivers';
