@@ -22,11 +22,11 @@ export const DriverRideHistoryPage = async (req, res) => {
   try {
     const data = await RideHistoryModel.select('*', `WHERE "driver_id" = '${id}'`);
     if (data.rows[0].driver_id !== id) {
-      return res.status(401).json({ message: 'Access denied, please login!' });
+      return res.status(401).json({ message: 'Access denied, please login!', success: false });
     }
-    return res.status(200).json({ message: data.rows });
+    return res.status(200).json({ message: data.rows, success: true });
   } catch (err) {
-    res.status(400).json({ msg: err.stack });
+    res.status(400).json({ message: err.stack });
   }
 };
 
@@ -44,9 +44,9 @@ export const UserRideHistoryPage = async (req, res) => {
   const { id } = req.user.userData;
   try {
     const data = await RideHistoryModel.select('*', `WHERE "user_id" = '${id}'`);
-    res.status(200).json({ message: data.rows });
+    res.status(200).json({ message: data.rows, success: true });
   } catch (err) {
-    res.status(400).json({ message: err.stack });
+    res.status(400).json({ message: 'Access denied, please login or register' });
   }
 };
 
@@ -68,8 +68,8 @@ export const addHistory = async (req, res) => {
   '${driverId}', '${offerId}', '${userId}', '${destination}', '${price}', '${status}'`;
   try {
     const data = await RideHistoryModel.insertWithReturn(columns, values);
-    res.status(200).json({ msg: data.rows });
+    res.status(200).json({ message: data.rows });
   } catch (err) {
-    res.status(400).json({ msg: err.stack });
+    res.status(400).json({ message: err.stack });
   }
 };

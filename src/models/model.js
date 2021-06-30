@@ -64,16 +64,28 @@ class Model {
     let query = `UPDATE ${this.table} SET `;
     const keys = Object.keys(data); // []
     let sqlQuery;
-    keys.map((key) => {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const key of keys) {
       if (key === keys[keys.length - 1]) {
         sqlQuery = `"${key}" = '${data[key]}' `;
         query += `${sqlQuery}`;
         query += `${clause}`;
         return this.pool.query(query);
       }
-      sqlQuery = `"${key}" = '${data[key]}', `;
+      sqlQuery = `"${key}" = '${data[key]}',`;
       query += `${sqlQuery}`;
-    });
+    }
+
+    // keys.map((key) => {
+    //   if (key === keys[keys.length - 1]) {
+    //     sqlQuery = `"${key}" = '${data[key]}' `;
+    //     query += `${sqlQuery}`;
+    //     query += `${clause}`;
+    //     return this.pool.query(query);
+    //   }
+    //   sqlQuery = `"${key}" = '${data[key]}', `;
+    //   query += `${sqlQuery}`;
+    // });
   }
 
   /**

@@ -21,7 +21,7 @@ export const addOffer = async (req, res) => {
   try {
     const data = await driverOfferModel.insertWithReturn(columns, values);
     if (id === data.rows[0].driver_id) {
-      return res.status(200).json({ message: data.rows });
+      return res.status(200).json({ message: data.rows, success: true });
     }
     return res.status(400)
       .json({ message: 'Access denied, please, Register or Login', success: false });
@@ -44,10 +44,12 @@ export const DriverRideOfferPage = async (req, res) => {
   try {
     const data = await driverOfferModel.select('*', `WHERE "driver_id" = '${id}'`);
     if (id !== data.rows[0].driver_id) {
-      return res.status(400).json({ message: 'Request Failed', success: false });
+      return res.status(400).json(
+        { message: 'Access denied, please login or register', success: false }
+      );
     }
     return res.status(200).json({
-      message: data.rows
+      message: data.rows, success: true
     });
   } catch (err) {
     res.status(400).json({ msg: err.stack });
@@ -67,7 +69,9 @@ export const allOffer = async (req, res) => {
   try {
     const data = await driverOfferModel.select('*');
     if (!data.rowCount) {
-      return res.status(400).json({ message: 'failed', success: false });
+      return res.status(400).json(
+        { message: 'Access denied, please login or register', success: false }
+      );
     }
     return res.status(200).json({ message: data.rows, success: true, });
   } catch (err) {
@@ -85,13 +89,14 @@ export const allOffer = async (req, res) => {
  */
 export const editOffers = async (req, res) => {
   const driverId = req.user.data.id;
-  const { id } = req.params;
   try {
     const data = await driverOfferModel.update(req.body, `WHERE "driver_id" = '${driverId}'`);
     if (!data.rowCount) {
-      return res.status(400).json({ message: `The give id of ${id} does not match` });
+      return res.status(400).json(
+        { message: 'Access denied, please login or register', success: false }
+      );
     }
-    return res.status(200).json({ message: 'You have updated offer successfully' });
+    return res.status(200).json({ message: 'You have updated offer successfully', success: true });
   } catch (err) {
     return res.status(400).json({ message: err.stack });
   }
@@ -108,15 +113,17 @@ export const editOffers = async (req, res) => {
  * @returns { message } - it return a success message if the given id is valid or not match
  */
 export const deleteOffer = async (req, res) => {
-  const driverId = req.user.driver.id;
+  const driverId = req.user.data.id;
   const { id } = req.params;
   try {
     const data = await driverOfferModel
       .deleteTableRow(`WHERE driver_id = '${driverId}' AND id = '${id}'`);
     if (!data.rowCount) {
-      return res.status(400).json({ message: `The given id of ${id} does not match` });
+      return res.status(400).json(
+        { message: `The given id of ${id} does not match`, success: false }
+      );
     }
-    return res.status(200).json({ Message: 'Deleted Successfully' });
+    return res.status(200).json({ Message: 'Deleted Successfully', success: true });
   } catch (err) {
     res.status(400).json({ Message: err.stack });
   }

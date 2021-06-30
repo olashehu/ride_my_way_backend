@@ -33,7 +33,7 @@ export const addUsers = async (req, res) => {
       message: 'User created successfully!'
     });
   } catch (err) {
-    res.status(500).json(err);
+    res.status(500).json({ message: 'Internal server error, please, reload', success: false });
   }
 };
 
@@ -52,10 +52,14 @@ export const editUserProfile = async (req, res) => {
   const { id } = req.user.data;
   try {
     const data = await userModel.update(req.body, `WHERE "id" = '${id}'`);
-    if (data.rowCount === 0) {
-      return res.status(400).json({ Message: '', success: false });
+    if (id !== data.rows[0].id) {
+      return res.status(400).json(
+        { Message: 'Access denied, please login or register', success: false }
+      );
     }
-    return res.status(200).json({ message: 'Profile updated successfully', success: true });
+    return res.status(200).json(
+      { message: 'Profile updated successfully', success: true }
+    );
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -75,10 +79,10 @@ export const getAllUser = async (req, res) => {
   try {
     const data = await userModel.select('*');
     if (!data.rowCount) {
-      return res.status(500).json({ message: 'Internal server error' });
+      return res.status(500).json({ message: 'Internal server error', success: false });
     }
-    return res.status(200).json({ message: data.rows });
+    return res.status(200).json({ message: data.rows, success: true });
   } catch (error) {
-    return res.status(400).json({ message: 'Internal server error' });
+    return res.status(400).json({ message: 'Internal server error', success: false });
   }
 };

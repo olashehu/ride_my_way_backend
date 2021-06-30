@@ -37,7 +37,7 @@ export const addDriver = async (req, res) => {
       message: 'Account created successfully!'
     });
   } catch (err) {
-    res.status(500).json(err);
+    res.status(500).json({ message: 'Internal server error, please, reload', success: false });
   }
 };
 
@@ -56,9 +56,11 @@ export const editDriverProfile = async (req, res) => {
   try {
     const data = await driverModel.update(req.body, `WHERE id = '${id}'`);
     if (data.rows[0].id !== id) {
-      return res.status(400).json({ Message: 'Access denied, Please, Login or Register' });
+      return res.status(400).json(
+        { Message: 'Access denied, Please, Login or Register', success: false }
+      );
     }
-    return res.status(200).json({ message: 'Profile updated successfully' });
+    return res.status(200).json({ message: 'Profile updated successfully', success: true });
   } catch (error) {
     res.json({ message: error.message });
   }
@@ -78,9 +80,11 @@ export const getAllDriver = async (req, res) => {
   try {
     const data = await driverModel.select('*');
     if (!data.rowCount) {
-      return res.status(400).json({ message: 'Bad request' });
+      return res.status(400).json(
+        { message: 'Internal server error, please reload page', success: false }
+      );
     }
-    return res.status(200).json({ message: data.rows });
+    return res.status(200).json({ message: data.rows, success: true });
   } catch (error) {
     return res.status(400).json({ message: error.stack });
   }
