@@ -7,13 +7,16 @@ const userModel = new Model('users');
 const driverModel = new Model('drivers');
 
 /**
- * @param {object} req -request
+ * @description - It validate all user input, if valid it call the next
+ * middleware else return error
  *
- * @param {object} res - response
+ * @param { object } req -request
  *
- * @param {object} next - the next middleware in the stack
+ * @param { object } res - response
  *
- * @returns {object} - it return a valid data if all the requirement is pass
+ * @param { object } next - the next middleware in the stack
+ *
+ * @returns { object } - it return a valid data if all the requirement is pass
  * otherwise reject it
  */
 export const validateCreateUser = async (req, res, next) => {

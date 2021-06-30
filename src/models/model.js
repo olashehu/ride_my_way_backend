@@ -74,17 +74,6 @@ class Model {
       sqlQuery = `"${key}" = '${data[key]}', `;
       query += `${sqlQuery}`;
     });
-    // for (const key of keys) {
-    //   if (key === keys[keys.length - 1]) {
-    //     sqlQuery = `"${key}" = '${data[key]}' `;
-    //     query += `${sqlQuery}`;
-    //     query += `${clause}`;
-    //     console.log(query);
-    //     return this.pool.query(query);
-    //   }
-    //   sqlQuery = `"${key}" = '${data[key]}',`;
-    //   query += `${sqlQuery}`;
-    // }
   }
 
   /**

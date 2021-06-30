@@ -34,11 +34,11 @@ export const DriverRideHistoryPage = async (req, res) => {
  * @description - This method will hadle the request for fetching all user ride history
  * and return back an object of data
  *
- * @return {obj} - it return a promise of object data if user is a vilid login user
+ * @return { object } - it return a promise of object data if user is a vilid login user
  *
- * @param {object} req - request
+ * @param { object } req - request
  *
- * @param {object} res - response
+ * @param { object } res - response
  */
 export const UserRideHistoryPage = async (req, res) => {
   const { id } = req.user.userData;
@@ -53,11 +53,11 @@ export const UserRideHistoryPage = async (req, res) => {
 /**
  * @description - This method will add to database history_table
  *
- * @return {obj} - this method return a promise of object containing history data.
+ * @return { object } - this method return a promise of object containing history data.
  *
- * @param {object} req -request
+ * @param  {object } req -request
  *
- * @param {object} res - response
+ * @param { object } res - response
  */
 export const addHistory = async (req, res) => {
   const {

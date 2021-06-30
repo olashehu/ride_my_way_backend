@@ -9,11 +9,11 @@ const userModel = new Model('users');
  * @description - This method handle the request coming to url and
  * add new user to the database. It return user object with a token.
  *
- * @param {object} req - request object
+ * @param { object } req - request object
  *
- * @param {object} res - response object
+ * @param { object } res - response object
  *
- * @return {object} - it return user object which is a result of a promise
+ * @return { object } - it return user object which is a result of a promise
  */
 export const addUsers = async (req, res) => {
   const {
@@ -41,11 +41,11 @@ export const addUsers = async (req, res) => {
  * @description - This method will update the database and a success
  * true or false.
  *
- * @param {object} req - request object
+ * @param { object } req - request object
  *
- * @param {object} res - response object
+ * @param { object } res - response object
  *
- * @returns {object} - if a valid user message "success true" otherwise
+ * @returns { object } - if a valid user message "success true" otherwise
  * "success false."
  */
 export const editUserProfile = async (req, res) => {
@@ -65,11 +65,11 @@ export const editUserProfile = async (req, res) => {
  * @description - This method handle the request coming to the url to
  * get all users and return object of all login users.
  *
- * @param {object} req - request
+ * @param { object } req - request
  *
- * @param {object} res - response
+ * @param { object } res - response
  *
- * @returns {object} - object of users from the database
+ * @returns { object } - object of all users from the database
  */
 export const getAllUser = async (req, res) => {
   try {

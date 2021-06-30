@@ -5,12 +5,11 @@ const driverOfferModel = new Model('ride_offer');
  * @description - This method will handle the request for adding offers to the database
  * and return object of offer added
  *
- * @param {object} req - request
+ * @param { object } req - request
  *
- * @param {object} res - response
+ * @param { object } res - response
  *
- * @return {object} - it return data of object which is a result of a
- * promise
+ * @return { object } - it return data of object which is a result of a promise
  */
 export const addOffer = async (req, res) => {
   const { id } = req.user.data;
@@ -34,11 +33,11 @@ export const addOffer = async (req, res) => {
  * @description - This method will handle the request coming to the url and fetch
  * data which is an object and return a promise object
  *
- * @param {object} req - request
+ * @param { object } req - request
  *
- * @param {object} res - response
+ * @param { object } res - response
  *
- * @return {object} - it return object
+ * @return { object } - it return object
  */
 export const DriverRideOfferPage = async (req, res) => {
   const { id } = req.user.data;
@@ -58,11 +57,11 @@ export const DriverRideOfferPage = async (req, res) => {
  *@description - This method handle the request for getting all offers in the database
  and return a object which is a result of a promise.
 
- * @param {object} req - request
+ * @param { object } req - request
  *
- * @param {object} res - response
+ * @param { object } res - response
  *
- * @returns {object} - a promise of all offer object containing offers data
+ * @returns { object } - a promise of all offer object containing offers data
  */
 export const allOffer = async (req, res) => {
   try {
@@ -78,11 +77,11 @@ export const allOffer = async (req, res) => {
 /**
  * @description - The method handle the request for editing a offer
  *
- *@return {obj}- it return success message if the given id matches or invaild
+ *@return { object }- it return success message if the given id matches or invaild
 
- * @param {object} req - request
+ * @param { object } req - request
 
- * @param {object} res - response
+ * @param { object } res - response
  */
 export const editOffers = async (req, res) => {
   const driverId = req.user.data.id;
@@ -102,11 +101,11 @@ export const editOffers = async (req, res) => {
  * @description - This method handle the request for deleting a offer and
  * return a success message if the given id matches the id of deleting item
  *
- * @param {object} req - request
+ * @param { object } req - request
  *
- * @param {object} res - response
+ * @param { object } res - response
  *
- * @returns {message} - it return a success message if the given id is valid or not match
+ * @returns { message } - it return a success message if the given id is valid or not match
  */
 export const deleteOffer = async (req, res) => {
   const driverId = req.user.driver.id;
