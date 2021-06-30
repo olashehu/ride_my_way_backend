@@ -1,7 +1,6 @@
-import object from 'joi/lib/types/object';
 import pool from './pool';
 /**
- *We create a model class whose constructor accept a database we
+ *This is a model class whose constructor accept a database we
  wish to operate on
  */
 class Model {
@@ -16,6 +15,8 @@ class Model {
   }
 
   /**
+ * @description - This method will fetch data from the database table.
+ * it accept columns and clause.
  *
  * @param {object} columns -  columns we want to retrieve from
  *
@@ -30,13 +31,14 @@ class Model {
   }
 
   /**
+   * @description This method will store data to the database and return the object of stored data.
+   * it accept column and values.
  *
- * @param {obj} columns - the table column
+ * @param {colum} columns - the table column
  *
- * @param {obj} values - the values of the column
+ * @param {values} values - the values for the the column
  *
- * @returns {obj} - it help us to insert data to the database and return a promise
- * of inserted data
+ * @return {object} -  it return a promise of object data
  */
   async insertWithReturn(columns, values) {
     const query = `
@@ -48,33 +50,51 @@ class Model {
   }
 
   /**
- * @param {obj} data - array od obect keys
- *
- * @param {object} clause - 
- *
- * @return {obj} - a function that update our database
- */
+   * @description - This method will update database table. It accept
+   * data as parameter which is information you are updating, and clause
+   * such as WHERE
+   *
+   * @param {object} data - object containing information to be updated
+   *
+   * @param {clause} clause - such as WHERE clause
+   *
+   * @return {message} - "success" if user object is validated and is valid
+   */
   async update(data, clause) {
     let query = `UPDATE ${this.table} SET `;
     const keys = Object.keys(data); // []
     let sqlQuery;
-    for (const key in data) {
+    keys.map((key) => {
       if (key === keys[keys.length - 1]) {
-        sqlQuery = `${key} = '${data[key]}' `;
+        sqlQuery = `"${key}" = '${data[key]}' `;
         query += `${sqlQuery}`;
         query += `${clause}`;
         return this.pool.query(query);
       }
-      sqlQuery = `${key} = '${data[key]}', `;
+      sqlQuery = `"${key}" = '${data[key]}', `;
       query += `${sqlQuery}`;
-    }
+    });
+    // for (const key of keys) {
+    //   if (key === keys[keys.length - 1]) {
+    //     sqlQuery = `"${key}" = '${data[key]}' `;
+    //     query += `${sqlQuery}`;
+    //     query += `${clause}`;
+    //     console.log(query);
+    //     return this.pool.query(query);
+    //   }
+    //   sqlQuery = `"${key}" = '${data[key]}',`;
+    //   query += `${sqlQuery}`;
+    // }
   }
 
   /**
+ * @description - This method will delete data from the table in database. It accept
+ * clause such as WHERE clause.
  *
- * @param {object} clause - a cluse such as WHERE
+ * @param {clause} clause - a cluse such as WHERE
  *
- * @return {obj} - a function to delete a table if clause is not provided
+ * @return {message} - it return a success message if the id of the user is valid
+ *otherwise "failed to delete your id does not match"
  */
   async deleteTableRow(clause) {
     const query = `DELETE FROM ${this.table} ${clause}`;

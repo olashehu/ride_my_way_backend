@@ -1,15 +1,19 @@
-import jwt from 'jsonwebtoken';
+// import jwt from 'jsonwebtoken';
 import Model from '../models/model';
+import assignToken from '../validations/validate';
 
 const userModel = new Model('users');
-const secretKey = process.env.SECRET_KEY;
+// const secretKey = process.env.SECRET_KEY;
 
 /**
+ * @description - This method handle the request coming to url and
+ * add new user to the database. It return user object with a token.
+ *
  * @param {object} req - request object
  *
  * @param {object} res - response object
  *
- * @return {obj} - it returns a promise of user object and assign it a token
+ * @return {object} - it return user object which is a result of a promise
  */
 export const addUsers = async (req, res) => {
   const {
@@ -21,15 +25,10 @@ export const addUsers = async (req, res) => {
   try {
     const data = await userModel.insertWithReturn(columns, values);
     const { id } = data.rows[0];
-    const token = jwt.sign({
-      id,
-      email
-    }, secretKey, {
-      expiresIn: '24h'
-    });
+    const user = { id, email: data.rows[0].email };
+    const token = assignToken(user);
     res.status(200).json({
-      id,
-      email,
+      user,
       token,
       message: 'User created successfully!'
     });
@@ -39,43 +38,47 @@ export const addUsers = async (req, res) => {
 };
 
 /**
+ * @description - This method will update the database and a success
+ * true or false.
  *
  * @param {object} req - request object
  *
  * @param {object} res - response object
  *
- * @returns {obj} - it return a success message if the request is a login user
+ * @returns {object} - if a valid user message "success true" otherwise
+ * "success false."
  */
 export const editUserProfile = async (req, res) => {
-  const { firstName } = req.body;
-  const { id } = req.user.userData;
+  const { id } = req.user.data;
   try {
-    const data = await userModel.update(`"firstName" = '${firstName}' WHERE "id" = ${id}`);
-    if (!data.rowCount) {
-      return res.status(400).json({ Message: 'Bad request' });
+    const data = await userModel.update(req.body, `WHERE "id" = '${id}'`);
+    if (data.rowCount === 0) {
+      return res.status(400).json({ Message: '', success: false });
     }
-    return res.status(200).json({ message: 'Profile updated successfully' });
+    return res.status(200).json({ message: 'Profile updated successfully', success: true });
   } catch (error) {
-    res.json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
 /**
+ * @description - This method handle the request coming to the url to
+ * get all users and return object of all login users.
  *
  * @param {object} req - request
  *
  * @param {object} res - response
  *
- * @returns {obj} - all user data in the database
+ * @returns {object} - object of users from the database
  */
 export const getAllUser = async (req, res) => {
   try {
     const data = await userModel.select('*');
     if (!data.rowCount) {
-      return res.status(400).json({ message: 'Bad request' });
+      return res.status(500).json({ message: 'Internal server error' });
     }
     return res.status(200).json({ message: data.rows });
   } catch (error) {
-    return res.status(400).json({ message: error.stack });
+    return res.status(400).json({ message: 'Internal server error' });
   }
 };

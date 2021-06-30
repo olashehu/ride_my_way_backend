@@ -11,9 +11,9 @@ const driverModel = new Model('drivers');
  *
  * @param {object} res - response
  *
- * @param {obj} next - the next middleware in the stack
+ * @param {object} next - the next middleware in the stack
  *
- * @returns {obj} - it return a valid data if all the requirement is pass
+ * @returns {object} - it return a valid data if all the requirement is pass
  * otherwise reject it
  */
 export const validateCreateUser = async (req, res, next) => {
@@ -37,14 +37,17 @@ export const validateCreateUser = async (req, res, next) => {
 };
 
 /**
+ * @description - This method handle the request of user rigister. it checks
+ * if email and phone number already exist. it return object with a message email
+ * or phone already exist else it call the next middleware in the proccess chain
  *
  * @param {object} req - request
  *
  * @param {object} res - response
  *
- * @param {obj} next - it call the next middleware in the stack
+ * @param {object} next - it call the next middleware in the stack
  *
- * @returns {obj} -
+ * @returns {object} - it return object of message
  */
 export const checkUserDetails = async (req, res, next) => {
   const { email, phone } = req.body;
@@ -72,11 +75,14 @@ export const checkUserDetails = async (req, res, next) => {
 
 /**
  *
- * @param {obj} req - request
+ * @description - This method handle the request for driver login. It compare the user input
+ * password and the hashed password when user register. if matches it assign new token to user
  *
- * @param {obj} res - response
+ * @param { object } req - request
  *
- * @returns {obj} - return user object  id, firstName and a token
+ * @param { object } res - response
+ *
+ * @returns { object } - return user object  id, firstName and a token
  */
 export const loginUser = async (req, res) => {
   const { password, email } = req.body;
@@ -141,7 +147,8 @@ export const checkDriverDetails = async (req, res, next) => {
 };
 
 /**
- * @description - Driver login endpoint
+ * @description - This method handle the request for driver login. It compare the user input
+ * password and the hashed password when user register. if matches it assign new token to user
  *
  * @param {object} req - request
  *

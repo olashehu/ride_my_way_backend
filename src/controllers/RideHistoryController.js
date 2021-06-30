@@ -7,9 +7,11 @@ import Model from '../models/model';
 const RideHistoryModel = new Model('ride_history');
 
 /**
- *@return {obj} - it return a promise of object from selected column in
-
- ride_history table when driver is a valid login driver
+ * @description - This method handle the request coming to url and
+ * return object of data if the user id matches the database id
+ *
+ * @return {object} - it return object of user history which is a result
+ * of a promise
 
  * @param {object} req - request
 
@@ -19,13 +21,19 @@ export const DriverRideHistoryPage = async (req, res) => {
   const { id } = req.user.driver;
   try {
     const data = await RideHistoryModel.select('*', `WHERE "driver_id" = '${id}'`);
-    res.status(200).json({ message: data.rows });
+    if (data.rows[0].driver_id !== id) {
+      return res.status(401).json({ message: 'Access denied, please login!' });
+    }
+    return res.status(200).json({ message: data.rows });
   } catch (err) {
     res.status(400).json({ msg: err.stack });
   }
 };
 
 /**
+ * @description - This method will hadle the request for fetching all user ride history
+ * and return back an object of data
+ *
  * @return {obj} - it return a promise of object data if user is a vilid login user
  *
  * @param {object} req - request
@@ -43,6 +51,8 @@ export const UserRideHistoryPage = async (req, res) => {
 };
 
 /**
+ * @description - This method will add to database history_table
+ *
  * @return {obj} - this method return a promise of object containing history data.
  *
  * @param {object} req -request

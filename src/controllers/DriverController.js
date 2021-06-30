@@ -7,12 +7,14 @@ import assignToken from '../validations/validate';
 const driverModel = new Model('drivers');
 
 /**
+ * @description - This method will handle the request for adding rigister driver
+ * to the database,and return back driver object which is a result of a promise
  *
  * @param {object} req - request
  *
  * @param {object} res - response
  *
- * @return {obj} -
+ * @return {object} - it return object with a token
  */
 export const addDriver = async (req, res) => {
   const {
@@ -40,20 +42,21 @@ export const addDriver = async (req, res) => {
 };
 
 /**
+ * @description - This method hadle the request for updating driver profile
+ * it return an object with "success message" or "access denied" if user is not valid
  *
- * @param {obj} req - request
+ * @param {object} req - request
  *
- * @param {obj} res - response
+ * @param {object} res - response
  *
- * @returns {obj} - it return bad request if invalid otherwise return success message
+ * @returns {object} - it return object with a message if user is valid or invalid
  */
 export const editDriverProfile = async (req, res) => {
-  const { firstName } = req.body;
   const { id } = req.user.driver;
   try {
-    const data = await driverModel.update(`first_name = '${firstName}' WHERE "id" = '${id}'`);
-    if (!data.rowCount) {
-      return res.status(400).json({ Message: 'Bad request' });
+    const data = await driverModel.update(req.body, `WHERE id = '${id}'`);
+    if (data.rows[0].id !== id) {
+      return res.status(400).json({ Message: 'Access denied, Please, Login or Register' });
     }
     return res.status(200).json({ message: 'Profile updated successfully' });
   } catch (error) {
@@ -62,11 +65,14 @@ export const editDriverProfile = async (req, res) => {
 };
 
 /**
+ * @description - This method handle the request for getting all register driver
+ * and return an object of all driver
+ *
  * @param {object} req - request
  *
  * @param {object} res - response
  *
- * @returns {obj} - it return all login drivers as a promise
+ * @returns {object} - it return object of all driver
  */
 export const getAllDriver = async (req, res) => {
   try {

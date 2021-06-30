@@ -8,8 +8,3 @@ const queryRun = async () => {
   await createTables();
 };
 queryRun();
-
-// (async () => {
-//
-//   await createTables();
-// })();

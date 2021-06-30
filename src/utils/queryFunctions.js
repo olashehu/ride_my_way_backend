@@ -24,14 +24,9 @@ export const executeQueryArray = async (queries) => {
   await Promise.all(executeQuery);
 };
 
-// export const executeQueryArray = async (arr) => new Promise(async (resolve) => {
-//   for (const sqlQuery of arr) {
-//     await pool.query(sqlQuery);
-//   }
-//   resolve();
-// });
-
 /**
+ * @description - This method await the execution of each table in the array
+ *
  * @returns {Promise} - when execute for the first time, it will drop all table listed
  if exist.
  */
@@ -45,6 +40,8 @@ export const dropTables = async () => {
 };
 
 /**
+ * @description - This method will await the creation of each table in the array
+ *
  * @returns {promise}- when execute for the first time it will create all listed table
  in the database
  */

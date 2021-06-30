@@ -7,7 +7,7 @@ import axios from 'axios';
  *
  * @param {obj} next - next middleware
  *
- *@return {obj} -
+ *@return {object} -
  */
 export const modifyMessage = (req, res, next) => {
   req.body.message = `SAYS: ${req.body.message}`;
@@ -16,13 +16,13 @@ export const modifyMessage = (req, res, next) => {
 
 /**
  *
- * @param {obj} req - request
+ * @param {object} req - request
  *
- * @param {obj} res - response
+ * @param {object} res - response
  *
  * @param {obj} next - next middleware in the process line
  *
- *@return {obj} -
+ *@return {object} -
  */
 export const performAsyncAction = async (req, res, next) => {
   try {
