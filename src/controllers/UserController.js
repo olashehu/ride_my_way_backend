@@ -52,16 +52,14 @@ export const editUserProfile = async (req, res) => {
   const { id } = req.user.data;
   try {
     const data = await userModel.update(req.body, `WHERE "id" = '${id}'`);
-    if (id !== data.rows[0].id) {
-      return res.status(400).json(
-        { Message: 'Access denied, please login or register', success: false }
-      );
+    if (data.rowCount === 0) {
+      return res.status(404).json({ message: 'user does not exist' });
     }
     return res.status(200).json(
       { message: 'Profile updated successfully', success: true }
     );
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
 
@@ -78,11 +76,17 @@ export const editUserProfile = async (req, res) => {
 export const getAllUser = async (req, res) => {
   try {
     const data = await userModel.select('*');
+    const {
+      id, firstName, lastName, email
+    } = data.rows[0];
+    const users = {
+      id, firstName, lastName, email
+    };
     if (!data.rowCount) {
-      return res.status(500).json({ message: 'Internal server error', success: false });
+      return res.status(404).json({ data: [], message: 'data not exist', success: false });
     }
-    return res.status(200).json({ message: data.rows, success: true });
-  } catch (error) {
-    return res.status(400).json({ message: 'Internal server error', success: false });
+    return res.status(200).json({ data: users, success: true });
+  } catch (err) {
+    return res.status(500).json({ message: err.message, success: false });
   }
 };

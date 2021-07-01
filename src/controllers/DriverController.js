@@ -58,8 +58,8 @@ export const editDriverProfile = async (req, res) => {
   try {
     const data = await driverModel.update(req.body, `WHERE id = '${id}'`);
     if (data.rowCount === 0) {
-      return res.status(401).json(
-        { Message: 'unauthorized, Please login or register', success: false }
+      return res.status(404).json(
+        { Message: 'this columns does not exist', success: false }
       );
     }
     return res.status(200).json({ message: 'Profile updated successfully', success: true });

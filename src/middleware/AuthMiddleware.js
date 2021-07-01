@@ -105,7 +105,7 @@ export const loginUser = async (req, res) => {
     };
     const token = assignToken(userData);
     return res.status(200).json({
-      Message: 'Welcome',
+      message: 'Welcome',
       userData,
       token
     });
