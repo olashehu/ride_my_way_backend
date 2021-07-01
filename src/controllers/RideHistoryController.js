@@ -20,13 +20,15 @@ const RideHistoryModel = new Model('ride_history');
 export const DriverRideHistoryPage = async (req, res) => {
   const { id } = req.user.driver;
   try {
-    const data = await RideHistoryModel.select('*', `WHERE "driver_id" = '${id}'`);
-    if (data.rows[0].driver_id !== id) {
-      return res.status(401).json({ message: 'Access denied, please login!', success: false });
+    const data = await RideHistoryModel.select('*', `WHERE "driverId" = '${id}'`);
+    if (data.rows[0].driverId !== id) {
+      return res.status(401).json(
+        { message: 'unauthorized, please login or register!', success: false }
+      );
     }
     return res.status(200).json({ message: data.rows, success: true });
   } catch (err) {
-    res.status(400).json({ message: err.stack });
+    res.status(500).json({ message: `internal server '${err.severity}'` });
   }
 };
 
@@ -43,10 +45,13 @@ export const DriverRideHistoryPage = async (req, res) => {
 export const UserRideHistoryPage = async (req, res) => {
   const { id } = req.user.userData;
   try {
-    const data = await RideHistoryModel.select('*', `WHERE "user_id" = '${id}'`);
+    const data = await RideHistoryModel.select('*', `WHERE "userId" = '${id}'`);
+    if (data.rows[0].userId !== id) {
+      return res.status(401).json({ message: 'unauthorized, please login or register' });
+    }
     res.status(200).json({ message: data.rows, success: true });
   } catch (err) {
-    res.status(400).json({ message: 'Access denied, please login or register' });
+    res.status(500).json({ message: `internal server '${err.severity}'` });
   }
 };
 
@@ -63,13 +68,13 @@ export const addHistory = async (req, res) => {
   const {
     driverId, offerId, userId, destination, price, status
   } = req.body;
-  const columns = 'driver_id, offer_id, user_id, destination, price, status';
+  const columns = '"driverId", "offerId", "userId", destination, price, status';
   const values = `
   '${driverId}', '${offerId}', '${userId}', '${destination}', '${price}', '${status}'`;
   try {
     const data = await RideHistoryModel.insertWithReturn(columns, values);
     res.status(200).json({ message: data.rows });
   } catch (err) {
-    res.status(400).json({ message: err.stack });
+    res.status(400).json({ message: err.severity });
   }
 };

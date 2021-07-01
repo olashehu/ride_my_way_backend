@@ -27,19 +27,19 @@ CREATE TABLE drivers (
 export const createTableOffer = `
 CREATE TABLE ride_offer (
   id SERIAL PRIMARY KEY,
-  driver_id INT NOT NULL,
+  "driverId" INT NOT NULL,
   destination VARCHAR(50) NOT NULL,
   price INT NOT NULL,
-  created_at TIMESTAMP DEFAULT NOW() NOT NULL
+  createdAt TIMESTAMP DEFAULT NOW() NOT NULL
 )
 `;
 
 export const createTableRideHisory = `
 CREATE TABLE ride_history (
   id SERIAL PRIMARY KEY,
-  driver_id INT NOT NULL,
-  user_id INT NOT NULL,
-  offer_id INT NOT NULL,
+  "driverId" INT NOT NULL,
+  "userId" INT NOT NULL,
+  "offerId" INT NOT NULL,
   destination VARCHAR(50) NOT NULL,
   price INT NOT NULL,
   status VARCHAR(50) NOT NULL,
@@ -48,11 +48,11 @@ CREATE TABLE ride_history (
 `;
 
 export const refDriverIDFromOffer = `
-ALTER TABLE ride_offer ADD FOREIGN KEY (driver_id) REFERENCES drivers(id)`;
+ALTER TABLE ride_offer ADD FOREIGN KEY ("driverId") REFERENCES drivers(id)`;
 export const refDriverIDFromHistory = `
-ALTER TABLE ride_history ADD FOREIGN KEY (driver_id) REFERENCES drivers(id)`;
+ALTER TABLE ride_history ADD FOREIGN KEY ("driverId") REFERENCES drivers(id)`;
 export const refUserIdFromHistory = `
-ALTER TABLE ride_history ADD FOREIGN KEY (user_id) REFERENCES users(id)`;
+ALTER TABLE ride_history ADD FOREIGN KEY ("userId") REFERENCES users(id)`;
 
 export const dropUsersTable = 'DROP TABLE IF EXISTS users';
 export const dropDriversTable = 'DROP TABLE IF EXISTS drivers';

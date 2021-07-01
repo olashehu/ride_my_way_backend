@@ -16,17 +16,19 @@ export const addOffer = async (req, res) => {
   const {
     driverId, destination, price
   } = req.body;
-  const columns = 'driver_id, destination, price';
-  const values = `'${driverId}','${destination}', '${price}'`;
+  const columns = '"driverId", destination, price';
+  const values = `'${driverId}', '${destination}', '${price}'`;
   try {
     const data = await driverOfferModel.insertWithReturn(columns, values);
-    if (id === data.rows[0].driver_id) {
-      return res.status(200).json({ message: data.rows, success: true });
+    if (id !== data.rows[0].driverId) {
+      return res.status(400).json(
+        { message: 'Access denied, please, Register or Login', success: false }
+      );
     }
     return res.status(400)
-      .json({ message: 'Access denied, please, Register or Login', success: false });
+      .json({ message: data.rows, success: true });
   } catch (err) {
-    res.status(400).json({ message: err.stack });
+    res.status(400).json({ message: err.severity });
   }
 };
 /**
@@ -52,7 +54,7 @@ export const DriverRideOfferPage = async (req, res) => {
       message: data.rows, success: true
     });
   } catch (err) {
-    res.status(400).json({ msg: err.stack });
+    res.status(400).json({ msg: err.severity });
   }
 };
 /**
@@ -75,7 +77,7 @@ export const allOffer = async (req, res) => {
     }
     return res.status(200).json({ message: data.rows, success: true, });
   } catch (err) {
-    res.status(400).json({ message: err.stack });
+    res.status(400).json({ message: err.severity });
   }
 };
 /**
@@ -98,7 +100,7 @@ export const editOffers = async (req, res) => {
     }
     return res.status(200).json({ message: 'You have updated offer successfully', success: true });
   } catch (err) {
-    return res.status(400).json({ message: err.stack });
+    return res.status(400).json({ message: err.severity });
   }
 };
 
@@ -117,14 +119,14 @@ export const deleteOffer = async (req, res) => {
   const { id } = req.params;
   try {
     const data = await driverOfferModel
-      .deleteTableRow(`WHERE driver_id = '${driverId}' AND id = '${id}'`);
+      .deleteTableRow(`WHERE driverId = '${driverId}' AND id = '${id}'`);
     if (!data.rowCount) {
       return res.status(400).json(
         { message: `The given id of ${id} does not match`, success: false }
       );
     }
-    return res.status(200).json({ Message: 'Deleted Successfully', success: true });
+    return res.status(200).json({ message: 'Deleted Successfully', success: true });
   } catch (err) {
-    res.status(400).json({ Message: err.stack });
+    res.status(400).json({ message: err.severity });
   }
 };

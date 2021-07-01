@@ -37,7 +37,9 @@ export const addDriver = async (req, res) => {
       message: 'Account created successfully!'
     });
   } catch (err) {
-    res.status(500).json({ message: 'Internal server error, please, reload', success: false });
+    res.status(500).json(
+      { message: `Internal server '${err.severity}', please re-try`, success: false }
+    );
   }
 };
 
@@ -56,13 +58,13 @@ export const editDriverProfile = async (req, res) => {
   try {
     const data = await driverModel.update(req.body, `WHERE id = '${id}'`);
     if (data.rows[0].id !== id) {
-      return res.status(400).json(
-        { Message: 'Access denied, Please, Login or Register', success: false }
+      return res.status(401).json(
+        { Message: 'unauthorized, Please login or register', success: false }
       );
     }
     return res.status(200).json({ message: 'Profile updated successfully', success: true });
-  } catch (error) {
-    res.json({ message: error.message });
+  } catch (err) {
+    res.status(500).json({ message: `internal server '${err.severity}'` });
   }
 };
 
@@ -70,22 +72,22 @@ export const editDriverProfile = async (req, res) => {
  * @description - This method handle the request for getting all register driver
  * and return an object of all driver
  *
- * @param {object} req - request
+ * @param { object } req - request
  *
- * @param {object} res - response
+ * @param { object } res - response
  *
- * @returns {object} - it return object of all driver
+ * @returns { object } - it return object of all driver
  */
 export const getAllDriver = async (req, res) => {
   try {
     const data = await driverModel.select('*');
     if (!data.rowCount) {
-      return res.status(400).json(
+      return res.status(500).json(
         { message: 'Internal server error, please reload page', success: false }
       );
     }
     return res.status(200).json({ message: data.rows, success: true });
   } catch (error) {
-    return res.status(400).json({ message: error.stack });
+    return res.status(400).json({ message: `internal server '${error.severity}'` });
   }
 };
