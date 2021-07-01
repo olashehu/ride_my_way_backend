@@ -38,7 +38,7 @@ export const addDriver = async (req, res) => {
     });
   } catch (err) {
     res.status(500).json(
-      { message: `Internal server '${err.severity}', please re-try`, success: false }
+      { message: 'Internal server error please re-try', success: false }
     );
   }
 };
@@ -59,12 +59,12 @@ export const editDriverProfile = async (req, res) => {
     const data = await driverModel.update(req.body, `WHERE id = '${id}'`);
     if (data.rowCount === 0) {
       return res.status(404).json(
-        { Message: 'this columns does not exist', success: false }
+        { Message: 'user does not exist', success: false }
       );
     }
     return res.status(200).json({ message: 'Profile updated successfully', success: true });
   } catch (err) {
-    res.status(500).json({ message: `internal server ${err.severity}` });
+    res.status(500).json({ message: 'internal server error' });
   }
 };
 
@@ -81,13 +81,19 @@ export const editDriverProfile = async (req, res) => {
 export const getAllDriver = async (req, res) => {
   try {
     const data = await driverModel.select('*');
+    const {
+      id, firstName, lastName, email
+    } = data.rows[0];
+    const drivers = {
+      id, firstName, lastName, email
+    };
     if (!data.rowCount) {
-      return res.status(500).json(
-        { message: 'Internal server error, please reload page', success: false }
+      return res.status(404).json(
+        { message: 'drivers does not exist', success: false }
       );
     }
-    return res.status(200).json({ message: data.rows, success: true });
+    return res.status(200).json({ data: drivers, success: true });
   } catch (error) {
-    return res.status(400).json({ message: `internal server '${error.severity}'` });
+    return res.status(400).json({ message: 'internal server error' });
   }
 };
