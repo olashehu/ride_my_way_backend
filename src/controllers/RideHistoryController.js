@@ -47,7 +47,7 @@ export const UserRideHistoryPage = async (req, res) => {
   try {
     const data = await RideHistoryModel.select('*', `WHERE "userId" = '${id}'`);
     if (data.rowCount === 0) {
-      return res.status(404).json({data: [], message: 'data does not exist', success: false });
+      return res.status(404).json({ data: [], message: 'data does not exist', success: false });
     }
     res.status(200).json({ data: data.rows, success: true });
   } catch (err) {

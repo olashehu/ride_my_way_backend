@@ -72,7 +72,7 @@ export const allOffer = async (req, res) => {
     const data = await driverOfferModel.select('*');
     if (!data.rowCount) {
       return res.status(404).json(
-        {data: [], message: 'data does not exist', success: false }
+        { data: [], message: 'data does not exist', success: false }
       );
     }
     return res.status(200).json({ data: data.rows, success: true, });
@@ -127,6 +127,6 @@ export const deleteOffer = async (req, res) => {
     }
     return res.status(200).json({ message: 'Deleted Successfully', success: true });
   } catch (err) {
-    res.status(500).json({ message: 'internal server error'});
+    res.status(500).json({ message: 'internal server error' });
   }
 };
