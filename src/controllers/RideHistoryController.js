@@ -21,14 +21,14 @@ export const DriverRideHistoryPage = async (req, res) => {
   const { id } = req.user.driver;
   try {
     const data = await RideHistoryModel.select('*', `WHERE "driverId" = '${id}'`);
-    if (data.rows[0].driverId !== id) {
-      return res.status(401).json(
-        { message: 'unauthorized, please login or register!', success: false }
+    if (data.rowCount === 0) {
+      return res.status(404).json(
+        { data: [], message: 'data does not exist', success: false }
       );
     }
-    return res.status(200).json({ message: data.rows, success: true });
+    return res.status(200).json({ data: data.rows, success: true });
   } catch (err) {
-    res.status(500).json({ message: `internal server '${err.severity}'` });
+    res.status(500).json({ message: 'internal server error' });
   }
 };
 
@@ -46,12 +46,12 @@ export const UserRideHistoryPage = async (req, res) => {
   const { id } = req.user.userData;
   try {
     const data = await RideHistoryModel.select('*', `WHERE "userId" = '${id}'`);
-    if (data.rows[0].userId !== id) {
-      return res.status(401).json({ message: 'unauthorized, please login or register' });
+    if (data.rowCount === 0) {
+      return res.status(404).json({data: [], message: 'data does not exist', success: false });
     }
-    res.status(200).json({ message: data.rows, success: true });
+    res.status(200).json({ data: data.rows, success: true });
   } catch (err) {
-    res.status(500).json({ message: `internal server '${err.severity}'` });
+    res.status(500).json({ message: 'internal server error' });
   }
 };
 
