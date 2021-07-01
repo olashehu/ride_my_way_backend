@@ -33,7 +33,7 @@ export const addUsers = async (req, res) => {
       message: 'User created successfully!'
     });
   } catch (err) {
-    res.status(500).json({ message: 'Internal server error, please, reload', success: false });
+    res.status(500).json({ message: 'Internal server error', success: false });
   }
 };
 
@@ -59,7 +59,7 @@ export const editUserProfile = async (req, res) => {
       { message: 'Profile updated successfully', success: true }
     );
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: 'internal server error' });
   }
 };
 
@@ -87,6 +87,6 @@ export const getAllUser = async (req, res) => {
     }
     return res.status(200).json({ data: users, success: true });
   } catch (err) {
-    return res.status(500).json({ message: err.message, success: false });
+    return res.status(500).json({ message: 'internal server error', success: false });
   }
 };
