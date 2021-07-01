@@ -22,13 +22,13 @@ export const addOffer = async (req, res) => {
     const data = await driverOfferModel.insertWithReturn(columns, values);
     if (id !== data.rows[0].driverId) {
       return res.status(400).json(
-        { message: 'Access denied, please, Register or Login', success: false }
+        { message: '', success: false }
       );
     }
     return res.status(400)
-      .json({ message: data.rows, success: true });
+      .json({ data: data.rows, success: true });
   } catch (err) {
-    res.status(400).json({ message: err.severity });
+    res.status(400).json({ message: 'internal server error' });
   }
 };
 /**
@@ -46,15 +46,15 @@ export const DriverRideOfferPage = async (req, res) => {
   try {
     const data = await driverOfferModel.select('*', `WHERE "driverId" = '${id}'`);
     if (id !== data.rows[0].driverId) {
-      return res.status(401).json(
-        { message: 'unauthorized, please login or register', success: false }
+      return res.status(404).json(
+        { data: [], message: 'data does not exist', success: false }
       );
     }
     return res.status(200).json({
-      message: data.rows, success: true
+      data: data.rows, success: true
     });
   } catch (err) {
-    res.status(500).json({ message: `internal server ${err.severity} ` });
+    res.status(500).json({ message: 'internal server error' });
   }
 };
 /**
@@ -71,13 +71,13 @@ export const allOffer = async (req, res) => {
   try {
     const data = await driverOfferModel.select('*');
     if (!data.rowCount) {
-      return res.status(400).json(
-        { message: 'unauthorized, please login or register', success: false }
+      return res.status(404).json(
+        {data: [], message: 'data does not exist', success: false }
       );
     }
-    return res.status(200).json({ message: data.rows, success: true, });
+    return res.status(200).json({ data: data.rows, success: true, });
   } catch (err) {
-    res.status(400).json({ message: `internal server ${err.severity}` });
+    res.status(400).json({ message: 'internal server error' });
   }
 };
 /**
@@ -95,12 +95,12 @@ export const editOffers = async (req, res) => {
     const data = await driverOfferModel.update(req.body, `WHERE "driverId" = '${driverId}'`);
     if (!data.rowCount) {
       return res.status(401).json(
-        { message: 'unauthorized, please login or register', success: false }
+        { message: 'data does not exist', success: false }
       );
     }
     return res.status(200).json({ message: 'You have updated offer successfully', success: true });
   } catch (err) {
-    return res.status(500).json({ message: `internal server ${err.severity}` });
+    return res.status(500).json({ message: 'internal server error' });
   }
 };
 
@@ -122,11 +122,11 @@ export const deleteOffer = async (req, res) => {
       .deleteTableRow(`WHERE "driverId" = '${driverId}' AND id = '${id}'`);
     if (data.rowCount === 0) {
       return res.status(401).json(
-        { message: 'unauthorized to delete this item', success: false }
+        { message: 'data does not exist', success: false }
       );
     }
     return res.status(200).json({ message: 'Deleted Successfully', success: true });
   } catch (err) {
-    res.status(500).json({ message: `internal server ${err.severity}` });
+    res.status(500).json({ message: 'internal server error'});
   }
 };
