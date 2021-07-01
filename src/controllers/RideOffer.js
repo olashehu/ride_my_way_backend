@@ -44,17 +44,17 @@ export const addOffer = async (req, res) => {
 export const DriverRideOfferPage = async (req, res) => {
   const { id } = req.user.data;
   try {
-    const data = await driverOfferModel.select('*', `WHERE "driver_id" = '${id}'`);
-    if (id !== data.rows[0].driver_id) {
-      return res.status(400).json(
-        { message: 'Access denied, please login or register', success: false }
+    const data = await driverOfferModel.select('*', `WHERE "driverId" = '${id}'`);
+    if (id !== data.rows[0].driverId) {
+      return res.status(401).json(
+        { message: 'unauthorized, please login or register', success: false }
       );
     }
     return res.status(200).json({
       message: data.rows, success: true
     });
   } catch (err) {
-    res.status(400).json({ msg: err.severity });
+    res.status(500).json({ message: `internal server ${err.severity} ` });
   }
 };
 /**
@@ -72,12 +72,12 @@ export const allOffer = async (req, res) => {
     const data = await driverOfferModel.select('*');
     if (!data.rowCount) {
       return res.status(400).json(
-        { message: 'Access denied, please login or register', success: false }
+        { message: 'unauthorized, please login or register', success: false }
       );
     }
     return res.status(200).json({ message: data.rows, success: true, });
   } catch (err) {
-    res.status(400).json({ message: err.severity });
+    res.status(400).json({ message: `internal server ${err.severity}` });
   }
 };
 /**
@@ -92,15 +92,15 @@ export const allOffer = async (req, res) => {
 export const editOffers = async (req, res) => {
   const driverId = req.user.data.id;
   try {
-    const data = await driverOfferModel.update(req.body, `WHERE "driver_id" = '${driverId}'`);
+    const data = await driverOfferModel.update(req.body, `WHERE "driverId" = '${driverId}'`);
     if (!data.rowCount) {
-      return res.status(400).json(
-        { message: 'Access denied, please login or register', success: false }
+      return res.status(401).json(
+        { message: 'unauthorized, please login or register', success: false }
       );
     }
     return res.status(200).json({ message: 'You have updated offer successfully', success: true });
   } catch (err) {
-    return res.status(400).json({ message: err.severity });
+    return res.status(500).json({ message: `internal server ${err.severity}` });
   }
 };
 
@@ -119,14 +119,14 @@ export const deleteOffer = async (req, res) => {
   const { id } = req.params;
   try {
     const data = await driverOfferModel
-      .deleteTableRow(`WHERE driverId = '${driverId}' AND id = '${id}'`);
-    if (!data.rowCount) {
-      return res.status(400).json(
-        { message: `The given id of ${id} does not match`, success: false }
+      .deleteTableRow(`WHERE "driverId" = '${driverId}' AND id = '${id}'`);
+    if (data.rowCount === 0) {
+      return res.status(401).json(
+        { message: 'unauthorized to delete this item', success: false }
       );
     }
     return res.status(200).json({ message: 'Deleted Successfully', success: true });
   } catch (err) {
-    res.status(400).json({ message: err.severity });
+    res.status(500).json({ message: `internal server ${err.severity}` });
   }
 };

@@ -54,17 +54,17 @@ export const addDriver = async (req, res) => {
  * @returns {object} - it return object with a message if user is valid or invalid
  */
 export const editDriverProfile = async (req, res) => {
-  const { id } = req.user.driver;
+  const { id } = req.user.data;
   try {
     const data = await driverModel.update(req.body, `WHERE id = '${id}'`);
-    if (data.rows[0].id !== id) {
+    if (data.rowCount === 0) {
       return res.status(401).json(
         { Message: 'unauthorized, Please login or register', success: false }
       );
     }
     return res.status(200).json({ message: 'Profile updated successfully', success: true });
   } catch (err) {
-    res.status(500).json({ message: `internal server '${err.severity}'` });
+    res.status(500).json({ message: `internal server ${err.severity}` });
   }
 };
 

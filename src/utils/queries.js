@@ -30,7 +30,7 @@ CREATE TABLE ride_offer (
   "driverId" INT NOT NULL,
   destination VARCHAR(50) NOT NULL,
   price INT NOT NULL,
-  createdAt TIMESTAMP DEFAULT NOW() NOT NULL
+  "createdAt" TIMESTAMP DEFAULT NOW() NOT NULL
 )
 `;
 
@@ -43,7 +43,7 @@ CREATE TABLE ride_history (
   destination VARCHAR(50) NOT NULL,
   price INT NOT NULL,
   status VARCHAR(50) NOT NULL,
-  created_at TIMESTAMP DEFAULT NOW() NOT NULL
+  "createdAt" TIMESTAMP DEFAULT NOW() NOT NULL
 )
 `;
 

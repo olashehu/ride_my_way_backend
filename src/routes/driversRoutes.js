@@ -19,7 +19,7 @@ driverRoute.get('/driver/ride-offers-page', allOffer);
 driverRoute.get('/driver/ride-history', isLoggedIn, DriverRideHistoryPage);
 driverRoute.get('/driver/ride-offer', isLoggedIn, DriverRideOfferPage);
 
-driverRoute.put('/driver/profile-page', isLoggedIn, editDriverProfile);
-driverRoute.put('/driver/ride-offer/:id', isLoggedIn, validateProfile, editOffers);
+driverRoute.put('/driver/profile-page', isLoggedIn, validateProfile, editDriverProfile);
+driverRoute.put('/driver/ride-offer', isLoggedIn, editOffers);
 driverRoute.delete('/driver/ride-offer/:id', isLoggedIn, deleteOffer);
 export default driverRoute;

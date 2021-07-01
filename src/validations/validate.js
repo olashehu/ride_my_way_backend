@@ -77,7 +77,7 @@ export const validateProfile = async (req, res, next) => {
 
   const { error } = Joi.validate(req.body, userSchema);
   if (error) {
-    return res.status(400).send(error.details);
+    return res.status(400).send(error.details[0].message);
   }
   return next();
 };
