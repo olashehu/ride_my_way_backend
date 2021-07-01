@@ -15,7 +15,7 @@ import {
 
 /**
  *
- * @param { arr } arr - parameter represent each query of array
+ * @param { arr } arr - parameter represent tables
  *
  * @returns {obj} - it return an array of query and wait for each to finish
  */
@@ -52,7 +52,6 @@ export const dropTables = async () => {
  * @description - This method will await the creation of each table in the array
  *
  * @returns {promise}- when execute for the first time it will create all listed table
- in the database
  */
 export const createTables = async () => {
   await executeQueryArray([
