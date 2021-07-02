@@ -92,7 +92,7 @@ export const editOffers = async (req, res) => {
   try {
     const data = await driverOfferModel.update(req.body, `WHERE "driverId" = '${driverId}'`);
     if (!data.rowCount) {
-      return res.status(401).json(
+      return res.status(404).json(
         { data: [], message: 'data does not exist', success: false }
       );
     }
