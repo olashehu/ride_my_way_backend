@@ -119,7 +119,7 @@ export const deleteOffer = async (req, res) => {
     const data = await driverOfferModel
       .deleteTableRow(`WHERE "driverId" = '${driverId}' AND id = '${id}'`);
     if (data.rowCount === 0) {
-      return res.status(401).json(
+      return res.status(404).json(
         { data: [], message: 'data does not exist', success: false }
       );
     }
