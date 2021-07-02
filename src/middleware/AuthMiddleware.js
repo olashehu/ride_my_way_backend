@@ -71,8 +71,8 @@ export const checkUserDetails = async (req, res, next) => {
       });
     }
     return next();
-  } catch (error) {
-    res.send({ erroe: `${error.message}` });
+  } catch (err) {
+    res.send({ error: `${err.message}` });
   }
 };
 
@@ -109,8 +109,8 @@ export const loginUser = async (req, res) => {
       userData,
       token
     });
-  } catch (error) {
-    res.send(error.message);
+  } catch (err) {
+    res.send(err.message);
   }
 };
 
@@ -144,8 +144,8 @@ export const checkDriverDetails = async (req, res, next) => {
       });
     }
     return next();
-  } catch (error) {
-    res.send({ error: `${error.message}` });
+  } catch (err) {
+    res.send({ error: `${err.message}` });
   }
 };
 

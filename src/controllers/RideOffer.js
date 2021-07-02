@@ -26,7 +26,7 @@ export const addOffer = async (req, res) => {
     return res.status(200)
       .json({ data: data.rows, success: true });
   } catch (err) {
-    res.status(500).json({ message: err.routine });
+    res.status(500).json({ message: err.message });
   }
 };
 /**
@@ -52,7 +52,7 @@ export const DriverRideOfferPage = async (req, res) => {
       data: data.rows, success: true
     });
   } catch (err) {
-    res.status(500).json({ message: err.routine });
+    res.status(500).json({ message: err.message });
   }
 };
 /**
@@ -98,7 +98,7 @@ export const editOffers = async (req, res) => {
     }
     return res.status(200).json({ message: 'You have updated offer successfully', success: true });
   } catch (err) {
-    return res.status(500).json({ message: err.routine });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -125,6 +125,6 @@ export const deleteOffer = async (req, res) => {
     }
     return res.status(200).json({ message: 'Deleted Successfully', success: true });
   } catch (err) {
-    res.status(500).json({ message: err.routine });
+    res.status(500).json({ message: err.message });
   }
 };

@@ -38,7 +38,7 @@ export const addDriver = async (req, res) => {
     });
   } catch (err) {
     res.status(500).json(
-      { message: err.routinr, success: false }
+      { message: err.message, success: false }
     );
   }
 };
@@ -64,7 +64,7 @@ export const editDriverProfile = async (req, res) => {
     }
     return res.status(200).json({ message: 'Profile updated successfully', success: true });
   } catch (err) {
-    res.status(500).json({ message: err.routine });
+    res.status(500).json({ message: err.message });
   }
 };
 

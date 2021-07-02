@@ -18,7 +18,7 @@ const RideHistoryModel = new Model('ride_history');
  * @param {object} res - response
  */
 export const DriverRideHistoryPage = async (req, res) => {
-  const { id } = req.user.driver;
+  const { id } = req.user.data;
   try {
     const data = await RideHistoryModel.select('*', `WHERE "driverId" = '${id}'`);
     if (data.rowCount === 0) {
@@ -28,7 +28,7 @@ export const DriverRideHistoryPage = async (req, res) => {
     }
     return res.status(200).json({ data: data.rows, success: true });
   } catch (err) {
-    res.status(500).json({ message: err.routine });
+    res.status(500).json({ message: err.message });
   }
 };
 
@@ -43,7 +43,7 @@ export const DriverRideHistoryPage = async (req, res) => {
  * @param { object } res - response
  */
 export const UserRideHistoryPage = async (req, res) => {
-  const { id } = req.user.userData;
+  const { id } = req.user.data;
   try {
     const data = await RideHistoryModel.select('*', `WHERE "userId" = '${id}'`);
     if (data.rowCount === 0) {
@@ -51,7 +51,7 @@ export const UserRideHistoryPage = async (req, res) => {
     }
     res.status(200).json({ data: data.rows, success: true });
   } catch (err) {
-    res.status(500).json({ message: err.routine });
+    res.status(500).json({ message: err.message });
   }
 };
 
@@ -75,6 +75,6 @@ export const addHistory = async (req, res) => {
     const data = await RideHistoryModel.insertWithReturn(columns, values);
     res.status(200).json({ message: data.rows });
   } catch (err) {
-    res.status(500).json({ message: err.routine });
+    res.status(500).json({ message: err.message });
   }
 };

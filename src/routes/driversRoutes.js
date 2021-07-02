@@ -12,7 +12,7 @@ const driverRoute = express.Router();
 driverRoute.post('/driver/signup', validateCreateUser, checkDriverDetails, addDriver);
 driverRoute.post('/driver/login', DriverLogin);
 driverRoute.post('/ride-history', addHistory);
-driverRoute.post('/driver/ride-offer-page', isLoggedIn, addOffer);
+driverRoute.post('/driver/ride-offer', isLoggedIn, addOffer);
 
 driverRoute.get('/drivers-page', getAllDriver);
 driverRoute.get('/driver/ride-offers-page', allOffer);

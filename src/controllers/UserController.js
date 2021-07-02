@@ -33,7 +33,7 @@ export const addUsers = async (req, res) => {
       message: 'User created successfully!'
     });
   } catch (err) {
-    res.status(500).json({ message: err.routine, success: false });
+    res.status(500).json({ message: err.message, success: false });
   }
 };
 
@@ -59,7 +59,7 @@ export const editUserProfile = async (req, res) => {
       { message: 'Profile updated successfully', success: true }
     );
   } catch (err) {
-    res.status(500).json({ message: err.routine });
+    res.status(500).json({ message: err.message });
   }
 };
 
