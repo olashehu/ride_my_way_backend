@@ -89,11 +89,11 @@ export const getAllDriver = async (req, res) => {
     };
     if (!data.rowCount) {
       return res.status(404).json(
-        { message: 'drivers does not exist', success: false }
+        { data: [], message: 'drivers does not exist', success: false }
       );
     }
     return res.status(200).json({ data: drivers, success: true });
   } catch (error) {
-    return res.status(400).json({ message: 'internal server error' });
+    return res.status(500).json({ message: 'internal server error' });
   }
 };
