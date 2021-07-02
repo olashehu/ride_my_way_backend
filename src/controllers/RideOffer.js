@@ -16,19 +16,17 @@ export const addOffer = async (req, res) => {
   const {
     driverId, destination, price
   } = req.body;
+  if (!id) {
+    return res.status(401).json({ message: 'unauthorize' });
+  }
   const columns = '"driverId", destination, price';
   const values = `'${driverId}', '${destination}', '${price}'`;
   try {
     const data = await driverOfferModel.insertWithReturn(columns, values);
-    if (id !== data.rows[0].driverId) {
-      return res.status(400).json(
-        { message: '', success: false }
-      );
-    }
-    return res.status(400)
+    return res.status(200)
       .json({ data: data.rows, success: true });
   } catch (err) {
-    res.status(400).json({ message: 'internal server error' });
+    res.status(500).json({ message: err.routine });
   }
 };
 /**
@@ -54,7 +52,7 @@ export const DriverRideOfferPage = async (req, res) => {
       data: data.rows, success: true
     });
   } catch (err) {
-    res.status(500).json({ message: 'internal server error' });
+    res.status(500).json({ message: err.routine });
   }
 };
 /**
@@ -77,7 +75,7 @@ export const allOffer = async (req, res) => {
     }
     return res.status(200).json({ data: data.rows, success: true, });
   } catch (err) {
-    res.status(400).json({ message: 'internal server error' });
+    res.status(500).json({ message: 'internal server error' });
   }
 };
 /**
@@ -95,12 +93,12 @@ export const editOffers = async (req, res) => {
     const data = await driverOfferModel.update(req.body, `WHERE "driverId" = '${driverId}'`);
     if (!data.rowCount) {
       return res.status(401).json(
-        { message: 'data does not exist', success: false }
+        { data: [], message: 'data does not exist', success: false }
       );
     }
     return res.status(200).json({ message: 'You have updated offer successfully', success: true });
   } catch (err) {
-    return res.status(500).json({ message: 'internal server error' });
+    return res.status(500).json({ message: err.routine });
   }
 };
 
@@ -122,11 +120,11 @@ export const deleteOffer = async (req, res) => {
       .deleteTableRow(`WHERE "driverId" = '${driverId}' AND id = '${id}'`);
     if (data.rowCount === 0) {
       return res.status(401).json(
-        { message: 'data does not exist', success: false }
+        { data: [], message: 'data does not exist', success: false }
       );
     }
     return res.status(200).json({ message: 'Deleted Successfully', success: true });
   } catch (err) {
-    res.status(500).json({ message: 'internal server error' });
+    res.status(500).json({ message: err.routine });
   }
 };

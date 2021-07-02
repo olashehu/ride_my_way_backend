@@ -28,7 +28,7 @@ export const DriverRideHistoryPage = async (req, res) => {
     }
     return res.status(200).json({ data: data.rows, success: true });
   } catch (err) {
-    res.status(500).json({ message: 'internal server error' });
+    res.status(500).json({ message: err.routine });
   }
 };
 
@@ -51,7 +51,7 @@ export const UserRideHistoryPage = async (req, res) => {
     }
     res.status(200).json({ data: data.rows, success: true });
   } catch (err) {
-    res.status(500).json({ message: 'internal server error' });
+    res.status(500).json({ message: err.routine });
   }
 };
 
@@ -75,6 +75,6 @@ export const addHistory = async (req, res) => {
     const data = await RideHistoryModel.insertWithReturn(columns, values);
     res.status(200).json({ message: data.rows });
   } catch (err) {
-    res.status(400).json({ message: err.severity });
+    res.status(500).json({ message: err.routine });
   }
 };

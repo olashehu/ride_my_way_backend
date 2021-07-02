@@ -38,7 +38,7 @@ export const addDriver = async (req, res) => {
     });
   } catch (err) {
     res.status(500).json(
-      { message: 'Internal server error please re-try', success: false }
+      { message: err.routinr, success: false }
     );
   }
 };
@@ -59,12 +59,12 @@ export const editDriverProfile = async (req, res) => {
     const data = await driverModel.update(req.body, `WHERE id = '${id}'`);
     if (data.rowCount === 0) {
       return res.status(404).json(
-        { Message: 'user does not exist', success: false }
+        { data: data.rows, Message: 'user does not exist', success: false }
       );
     }
     return res.status(200).json({ message: 'Profile updated successfully', success: true });
   } catch (err) {
-    res.status(500).json({ message: 'internal server error' });
+    res.status(500).json({ message: err.routine });
   }
 };
 
