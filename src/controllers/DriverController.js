@@ -79,20 +79,16 @@ export const editDriverProfile = async (req, res) => {
  * @returns { object } - it return object of all driver
  */
 export const getAllDriver = async (req, res) => {
+  let total = 0;
   try {
-    const data = await driverModel.select('*');
-    const {
-      id, firstName, lastName, email
-    } = data.rows[0];
-    const drivers = {
-      id, firstName, lastName, email
-    };
+    const data = await driverModel.select('id,"firstName", "lastName", email');
+    total += data.rowCount;
     if (!data.rowCount) {
       return res.status(404).json(
         { data: [], message: 'drivers does not exist', success: false }
       );
     }
-    return res.status(200).json({ data: drivers, success: true });
+    return res.status(200).json({ data: data.rows, total, success: true });
   } catch (error) {
     return res.status(500).json({ message: 'internal server error' });
   }

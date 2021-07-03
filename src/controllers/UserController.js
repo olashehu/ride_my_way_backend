@@ -74,18 +74,14 @@ export const editUserProfile = async (req, res) => {
  * @returns { object } - object of all users from the database
  */
 export const getAllUser = async (req, res) => {
+  let total = 0;
   try {
-    const data = await userModel.select('*');
-    const {
-      id, firstName, lastName, email
-    } = data.rows[0];
-    const users = {
-      id, firstName, lastName, email
-    };
+    const data = await userModel.select('id, "firstName", "lastName", email');
+    total += data.rowCount;
     if (!data.rowCount) {
       return res.status(404).json({ data: [], message: 'data not exist', success: false });
     }
-    return res.status(200).json({ data: users, success: true });
+    return res.status(200).json({ data: data.rows, total, success: true });
   } catch (err) {
     return res.status(500).json({ message: 'internal server error', success: false });
   }
