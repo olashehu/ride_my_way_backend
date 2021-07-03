@@ -73,7 +73,7 @@ export const addHistory = async (req, res) => {
   '${driverId}', '${offerId}', '${userId}', '${destination}', '${price}', '${status}'`;
   try {
     const data = await RideHistoryModel.insertWithReturn(columns, values);
-    res.status(200).json({ message: data.rows });
+    res.status(200).json({ data: data.rows });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
