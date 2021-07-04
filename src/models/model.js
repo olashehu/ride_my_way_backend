@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 import pool from './pool';
 /**
  *This is a model class whose constructor accept a database we
@@ -64,7 +65,7 @@ class Model {
     let query = `UPDATE ${this.table} SET `;
     const keys = Object.keys(data); // []
     let sqlQuery;
-    keys.forEach((key) => {
+    for (const key of keys) {
       if (key === keys[keys.length - 1]) {
         sqlQuery = `"${key}" = '${data[key]}' `;
         query += `${sqlQuery}`;
@@ -73,7 +74,7 @@ class Model {
       }
       sqlQuery = `"${key}" = '${data[key]}',`;
       query += `${sqlQuery}`;
-    });
+    }
   }
 
   /**
