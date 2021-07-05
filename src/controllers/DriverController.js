@@ -47,11 +47,11 @@ export const addDriver = async (req, res) => {
  * @description - This method hadle the request for updating driver profile
  * it return an object with "success message" or "access denied" if user is not valid
  *
- * @param {object} req - request
+ * @param { object } req - request
  *
- * @param {object} res - response
+ * @param { object } res - response
  *
- * @returns {object} - it return object with a message if user is valid or invalid
+ * @returns { object } - it return object with a message if user is valid or invalid
  */
 export const editDriverProfile = async (req, res) => {
   const { id } = req.user.data;

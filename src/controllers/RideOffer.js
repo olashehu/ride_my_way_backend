@@ -66,14 +66,16 @@ export const DriverRideOfferPage = async (req, res) => {
  * @returns { object } - a promise of all offer object containing offers data
  */
 export const allOffer = async (req, res) => {
+  let total;
   try {
     const data = await driverOfferModel.select('*');
+    total += data.rowCount;
     if (!data.rowCount) {
       return res.status(404).json(
         { data: [], message: 'data does not exist', success: false }
       );
     }
-    return res.status(200).json({ data: data.rows, success: true, });
+    return res.status(200).json({ data: data.rows, total, success: true, });
   } catch (err) {
     res.status(500).json({ message: 'internal server error' });
   }
