@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import Joi from 'joi';
+import bcrypt from 'bcrypt';
 
 const secretKey = process.env.SECRET_KEY;
 
@@ -58,14 +59,14 @@ export const isLoggedIn = (req, res, next) => {
   }
 };
 /**
- * @description - This method validate user request to edit is first and last name
+ * @description - This method validate user request to edit first and last name
  * It return error if user input is less than three character
  *
  * @param {obj} req - request
  *
  * @param {obj} res - response
  *
- * @param {next} next - next middleware in the proccess circle
+ * @param {next} next - it call next middleware in the proccess circle
  *
  * @returns {object} - user object
  */
@@ -79,6 +80,40 @@ export const validateProfile = async (req, res, next) => {
   if (error) {
     return res.status(400).send(error.details[0].message);
   }
+  return next();
+};
+/**
+ * @description - This method validate driver input. if valid it pass the request body of the
+ * user to next function in the route proccess chain.
+ *
+ * @param { object } req - req
+ *
+ * @param { object } res - res
+ *
+ * @param { function } next - it call the next function in the route proccess chain
+ *
+ * @returns { message } - if error, return error message
+ */
+export const validateCreateDriver = async (req, res, next) => {
+  const userSchema = {
+    firstName: Joi.string().required(),
+    lastName: Joi.string().required(),
+    address: Joi.string().max(100).required(),
+    phone: Joi.string().max(11).required(),
+    email: Joi.string().max(256).required(),
+    password: Joi.string().min(7).required(),
+    carModel: Joi.string().max(20).required(),
+    modelYear: Joi.number().min(2005).max(2021).required(),
+    licencePlate: Joi.string().required()
+  };
+
+  const { error } = Joi.validate(req.body, userSchema);
+  if (error) {
+    return res.status(400).send(error.details[0].message);
+  }
+
+  const { password } = req.body;
+  req.body.password = await bcrypt.hash(password, 10);
   return next();
 };
 

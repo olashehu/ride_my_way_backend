@@ -18,28 +18,24 @@ const driverModel = new Model('drivers');
  */
 export const addDriver = async (req, res) => {
   const {
-    firstName, lastName, address, phone, email, password
+    firstName, lastName, address, phone, email, password, carModel, modelYear, licencePlate
   } = req.body;
-  const columns = '"firstName", "lastName", address, phone, email, password';
+  const columns = `"firstName", "lastName", address, phone, email,
+  password, "carModel", "modelYear", "licencePlate"`;
   // eslint-disable-next-line max-len
-  const values = `'${firstName}', '${lastName}', '${address}', '${phone}', '${email}', '${password}'`;
+  const values = `'${firstName}', '${lastName}', '${address}', '${phone}', '${email}', '${password}', '${carModel}', '${modelYear}', '${licencePlate}'`;
   try {
     const data = await driverModel.insertWithReturn(columns, values);
     const { id } = data.rows[0];
-    const driver = {
-      id,
-      email: data.rows[0].email
-    };
+    const driver = { id, email: data.rows[0].email };
     const token = assignToken(driver);
-    res.status(200).json({
+    res.status(201).json({
       driver,
       token,
-      message: 'Account created successfully!'
+      message: 'User created successfully!'
     });
   } catch (err) {
-    res.status(500).json(
-      { message: err.message, success: false }
-    );
+    res.status(500).json({ message: err.message, success: false });
   }
 };
 
@@ -62,7 +58,7 @@ export const editDriverProfile = async (req, res) => {
         { data: [], Message: 'user does not exist', success: false }
       );
     }
-    return res.status(200).json({ message: 'Profile updated successfully', success: true });
+    return res.status(201).json({ message: 'Profile updated successfully', success: true });
   } catch (err) {
     res.status(500).json({ message: err.stack });
   }
@@ -88,7 +84,7 @@ export const getAllDriver = async (req, res) => {
         { data: [], message: 'drivers does not exist', success: false }
       );
     }
-    return res.status(200).json({ data: data.rows, total, success: true });
+    return res.status(201).json({ data: data.rows, total, success: true });
   } catch (error) {
     return res.status(500).json({ message: 'internal server error' });
   }

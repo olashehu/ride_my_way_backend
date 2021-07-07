@@ -5,11 +5,11 @@ import { addHistory, DriverRideHistoryPage } from '../controllers/RideHistoryCon
 import {
   addOffer, allOffer, deleteOffer, DriverRideOfferPage, editOffers
 } from '../controllers/RideOffer';
-import { checkDriverDetails, DriverLogin, validateCreateUser } from '../middleware/AuthMiddleware';
-import { isLoggedIn, validateProfile } from '../validations/validate';
+import { checkDriverDetails, DriverLogin } from '../middleware/AuthMiddleware';
+import { isLoggedIn, validateCreateDriver, validateProfile } from '../validations/validate';
 
 const driverRoute = express.Router();
-driverRoute.post('/driver/signup', validateCreateUser, checkDriverDetails, addDriver);
+driverRoute.post('/driver/signup', validateCreateDriver, checkDriverDetails, addDriver);
 driverRoute.post('/driver/login', DriverLogin);
 driverRoute.post('/ride-history', addHistory);
 driverRoute.post('/driver/ride-offer', isLoggedIn, addOffer);

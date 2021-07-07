@@ -27,7 +27,7 @@ export const addUsers = async (req, res) => {
     const { id } = data.rows[0];
     const user = { id, email: data.rows[0].email };
     const token = assignToken(user);
-    res.status(200).json({
+    res.status(201).json({
       user,
       token,
       message: 'User created successfully!'
@@ -55,7 +55,7 @@ export const editUserProfile = async (req, res) => {
     if (data.rowCount === 0) {
       return res.status(404).json({ data: [], message: 'user does not exist' });
     }
-    return res.status(200).json(
+    return res.status(201).json(
       { message: 'Profile updated successfully', success: true }
     );
   } catch (err) {
@@ -81,7 +81,7 @@ export const getAllUser = async (req, res) => {
     if (!data.rowCount) {
       return res.status(404).json({ data: [], message: 'data not exist', success: false });
     }
-    return res.status(200).json({ data: data.rows, total, success: true });
+    return res.status(201).json({ data: data.rows, total, success: true });
   } catch (err) {
     return res.status(500).json({ message: 'internal server error', success: false });
   }

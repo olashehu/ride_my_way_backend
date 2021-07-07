@@ -5,6 +5,7 @@ import Model from '../models/model';
  this represent ride_history table in my database
  */
 const RideHistoryModel = new Model('ride_history');
+// const offerModel = new Model('ride_offer');
 
 /**
  * @description - This method handle the request coming to url and
@@ -26,7 +27,7 @@ export const DriverRideHistoryPage = async (req, res) => {
         { data: [], message: 'data does not exist', success: false }
       );
     }
-    return res.status(200).json({ data: data.rows, success: true });
+    return res.status(201).json({ data: data.rows, success: true });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -49,7 +50,7 @@ export const UserRideHistoryPage = async (req, res) => {
     if (data.rowCount === 0) {
       return res.status(404).json({ data: [], message: 'data does not exist', success: false });
     }
-    res.status(200).json({ data: data.rows, success: true });
+    res.status(201).json({ data: data.rows, success: true });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -73,7 +74,7 @@ export const addHistory = async (req, res) => {
   '${driverId}', '${offerId}', '${userId}', '${destination}', '${price}', '${status}'`;
   try {
     const data = await RideHistoryModel.insertWithReturn(columns, values);
-    res.status(200).json({ data: data.rows });
+    res.status(201).json({ data: data.rows });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

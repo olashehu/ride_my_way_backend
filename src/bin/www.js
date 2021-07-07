@@ -52,8 +52,10 @@ const onError = (error) => {
     // eslint-disable-next-line no-alert
     case 'EACCES': alert(`${bind} requires elevated privileges`);
       process.exit(1);
+
+      break;
       // eslint-disable-next-line no-alert
-      break; case 'EADDRINUSE': alert(`${bind} is already in use`);
+    case 'EADDRINUSE': alert(`${bind} is already in use`);
       process.exit(1);
       break; default: throw error;
   }

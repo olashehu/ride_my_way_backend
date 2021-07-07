@@ -23,7 +23,7 @@ export const addOffer = async (req, res) => {
   const values = `'${driverId}', '${destination}', '${price}'`;
   try {
     const data = await driverOfferModel.insertWithReturn(columns, values);
-    return res.status(200)
+    return res.status(201)
       .json({ data: data.rows, success: true });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -48,7 +48,7 @@ export const DriverRideOfferPage = async (req, res) => {
         { data: [], message: 'data does not exist', success: false }
       );
     }
-    return res.status(200).json({
+    return res.status(201).json({
       data: data.rows, success: true
     });
   } catch (err) {
@@ -75,7 +75,7 @@ export const allOffer = async (req, res) => {
         { data: [], message: 'data does not exist', success: false }
       );
     }
-    return res.status(200).json({ data: data.rows, total, success: true, });
+    return res.status(201).json({ data: data.rows, total, success: true, });
   } catch (err) {
     res.status(500).json({ message: 'internal server error' });
   }
@@ -98,7 +98,7 @@ export const editOffers = async (req, res) => {
         { data: [], message: 'data does not exist', success: false }
       );
     }
-    return res.status(200).json({ message: 'You have updated offer successfully', success: true });
+    return res.status(201).json({ message: 'You have updated offer successfully', success: true });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
@@ -125,7 +125,7 @@ export const deleteOffer = async (req, res) => {
         { data: [], message: 'data does not exist', success: false }
       );
     }
-    return res.status(200).json({ message: 'Deleted Successfully', success: true });
+    return res.status(201).json({ message: 'Deleted Successfully', success: true });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
