@@ -3,7 +3,7 @@ CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   "firstName" VARCHAR NOT NULL,
   "lastName" VARCHAR NOT NULL,
-  address VARCHAR NOT NULL,
+  address VARCHAR(100) NOT NULL,
   phone TEXT NOT NULL,
   email VARCHAR(50) NOT NULL,
   password VARCHAR(250) NOT NULL,
@@ -16,14 +16,14 @@ CREATE TABLE drivers (
   id SERIAL PRIMARY KEY,
   "firstName" VARCHAR(50) NOT NULL,
   "lastName" VARCHAR(50) NOT NULL,
-  address VARCHAR(50) NOT NULL,
+  address VARCHAR(100) NOT NULL,
   phone text NOT NULL,
   email VARCHAR(50) NOT NULL,
   "carModel" VARCHAR(30) NOT NULL,
   "modelYear" TEXT NOT NULL,
   "licencePlate" TEXT NOT NULL,
   password VARCHAR(250) NOT NULL,
-  UNIQUE(email, phone)
+  UNIQUE(email, phone, "licencePlate")
 )
 `;
 
@@ -45,7 +45,7 @@ CREATE TABLE ride_history (
   "offerId" INT NOT NULL,
   destination VARCHAR(50) NOT NULL,
   price INT NOT NULL,
-  status VARCHAR(50) NOT NULL,
+  status VARCHAR NOT NULL,
   "createdAt" TIMESTAMP DEFAULT NOW() NOT NULL
 )
 `;

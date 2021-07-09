@@ -1,19 +1,18 @@
-// import jwt from 'jsonwebtoken';
 import Model from '../models/model';
 import assignToken from '../validations/validate';
 
 const userModel = new Model('users');
-// const secretKey = process.env.SECRET_KEY;
+const rideHistoryModel = new Model('ride_history');
+const offerModel = new Model('ride_offer');
 
 /**
- * @description - This method handle the request coming to url and
- * add new user to the database. It return user object with a token.
+ * @description - This method add user to database and return object data
  *
- * @param { object } req - request object
+ * @param {object} req - request object
  *
- * @param { object } res - response object
+ * @param {object} res - response object
  *
- * @return { object } - it return user object which is a result of a promise
+ * @return {object} - it return user object
  */
 export const addUsers = async (req, res) => {
   const {
@@ -38,15 +37,13 @@ export const addUsers = async (req, res) => {
 };
 
 /**
- * @description - This method will update the database and a success
- * true or false.
+ * @description - This method update user profile
  *
- * @param { object } req - request object
+ * @param {object} req - request object
  *
- * @param { object } res - response object
+ * @param {object} res - response object
  *
- * @returns { object } - if a valid user message "success true" otherwise
- * "success false."
+ * @returns {object} - return message object
  */
 export const editUserProfile = async (req, res) => {
   const { id } = req.user.data;
@@ -64,14 +61,13 @@ export const editUserProfile = async (req, res) => {
 };
 
 /**
- * @description - This method handle the request coming to the url to
- * get all users and return object of all login users.
+ * @description - This method fetch all user in database and return data object
  *
- * @param { object } req - request
+ * @param {object} req - request
  *
- * @param { object } res - response
+ * @param {object} res - response
  *
- * @returns { object } - object of all users from the database
+ * @returns {object} - object of all users from the database
  */
 export const getAllUser = async (req, res) => {
   let total = 0;
@@ -84,5 +80,39 @@ export const getAllUser = async (req, res) => {
     return res.status(201).json({ data: data.rows, total, success: true });
   } catch (err) {
     return res.status(500).json({ message: 'internal server error', success: false });
+  }
+};
+
+/**
+ *
+ * @param {object} req - request
+ *
+ * @param {object} res - response
+ *
+ * @returns {object} -
+ */
+export const requestForRide = async (req, res) => {
+  const userId = req.user.data.id;
+  const offerId = req.params.id;
+  try {
+    const offer = await offerModel
+      .select('id, "driverId", destination, price', ` WHERE "id" = '${offerId}'`);
+    if (!offer.rowCount) {
+      return res.status(404).json({ data: [], message: 'this id has no offer', success: false });
+    }
+    const {
+      id, driverId, destination, price
+    } = offer.rows[0];
+    const columns = '"offerId", "driverId", "userId", destination, price, status';
+    const values = `
+    '${id}', '${driverId}', '${userId}', '${destination}', '${price}', 'pending'`;
+    const data = await rideHistoryModel.insertWithReturn(columns, values);
+    console.log(data);
+    res.status(201).json({ message: 'offer created successfully', success: true });
+  } catch (err) {
+    return res.status(500).json({
+      error: err.stack,
+      success: false
+    });
   }
 };

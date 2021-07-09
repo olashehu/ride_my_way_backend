@@ -47,6 +47,7 @@ class Model {
     VALUES (${values})
     RETURNING *
     `;
+    console.log(query);
     return this.pool.query(query);
   }
 

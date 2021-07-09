@@ -7,8 +7,7 @@ import assignToken from '../validations/validate';
 const driverModel = new Model('drivers');
 
 /**
- * @description - This method will handle the request for adding rigister driver
- * to the database,and return back driver object which is a result of a promise
+ * @description - This method add driver to the database
  *
  * @param {object} req - request
  *
@@ -40,14 +39,13 @@ export const addDriver = async (req, res) => {
 };
 
 /**
- * @description - This method hadle the request for updating driver profile
- * it return an object with "success message" or "access denied" if user is not valid
+ * @description - This method update driver profile
  *
- * @param { object } req - request
+ * @param {object} req - request
  *
- * @param { object } res - response
+ * @param {object} res - response
  *
- * @returns { object } - it return object with a message if user is valid or invalid
+ * @returns {object} - it return object message
  */
 export const editDriverProfile = async (req, res) => {
   const { id } = req.user.data;
@@ -65,14 +63,13 @@ export const editDriverProfile = async (req, res) => {
 };
 
 /**
- * @description - This method handle the request for getting all register driver
- * and return an object of all driver
+ * @description - This method fetch all driver in database
  *
- * @param { object } req - request
+ * @param {object} req - request
  *
- * @param { object } res - response
+ * @param {object} res - response
  *
- * @returns { object } - it return object of all driver
+ * @returns {object} - it return object data of all driver
  */
 export const getAllDriver = async (req, res) => {
   let total = 0;

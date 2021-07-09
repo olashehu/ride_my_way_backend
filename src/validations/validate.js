@@ -5,9 +5,11 @@ import bcrypt from 'bcrypt';
 const secretKey = process.env.SECRET_KEY;
 
 /**
- * @param {obj} data - driver object
+ * @description - This method assign a token to user object t
  *
- * @return {obj} - token with driver object data
+ * @param { object } data - driver object
+ *
+ * @return { object } - token with driver object data
  */
 const assignToken = (data) => {
   const tokes = jwt.sign({
@@ -21,13 +23,13 @@ const assignToken = (data) => {
 /**
  * @description - This method validate user token
  *
- * @param {object} req - request bject
+ * @param { object } req - request bject
  *
- * @param {object} res - response object
+ * @param { object } res - response object
  *
- * @param {object} next - it call the next function in the route proccess chain
+ * @param { object } next - it call the next function in the route proccess chain
  *
- * @return {object} - it return object of user with a sign token
+ * @return { object } - response object
  */
 export const isLoggedIn = (req, res, next) => {
   const token = req.headers.authorization;
@@ -62,13 +64,13 @@ export const isLoggedIn = (req, res, next) => {
  * @description - This method validate user request to edit first and last name
  * It return error if user input is less than three character
  *
- * @param {obj} req - request
+ * @param { object } req - request
  *
- * @param {obj} res - response
+ * @param { object } res - response
  *
- * @param {next} next - it call next middleware in the proccess circle
+ * @param { next } next - it call next middleware in the proccess circle
  *
- * @returns {object} - user object
+ * @returns { object } - response object
  */
 export const validateProfile = async (req, res, next) => {
   const userSchema = {
@@ -92,7 +94,7 @@ export const validateProfile = async (req, res, next) => {
  *
  * @param { function } next - it call the next function in the route proccess chain
  *
- * @returns { message } - if error, return error message
+ * @returns { object } - if error, return error object
  */
 export const validateCreateDriver = async (req, res, next) => {
   const userSchema = {
@@ -100,7 +102,7 @@ export const validateCreateDriver = async (req, res, next) => {
     lastName: Joi.string().required(),
     address: Joi.string().max(100).required(),
     phone: Joi.string().max(11).required(),
-    email: Joi.string().max(256).required(),
+    email: Joi.string().email().max(256).required(),
     password: Joi.string().min(7).required(),
     carModel: Joi.string().max(20).required(),
     modelYear: Joi.number().min(2005).max(2021).required(),

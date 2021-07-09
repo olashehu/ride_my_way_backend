@@ -1,49 +1,42 @@
 import Model from '../models/model';
 
-const driverOfferModel = new Model('ride_offer');
+const offerModel = new Model('ride_offer');
 /**
- * @description - This method will handle the request for adding offers to the database
- * and return object of offer added
+ * @description - This method add offer to the database
  *
- * @param { object } req - request
+ * @param {object} req - request
  *
- * @param { object } res - response
+ * @param {object} res - response
  *
- * @return { object } - it return data of object which is a result of a promise
+ * @return {object} - it return data object
  */
 export const addOffer = async (req, res) => {
-  const { id } = req.user.data;
-  const {
-    driverId, destination, price
-  } = req.body;
-  if (!id) {
-    return res.status(401).json({ message: 'unauthorize' });
-  }
+  const driverId = req.user.data.id;
+  const { destination, price } = req.body;
   const columns = '"driverId", destination, price';
   const values = `'${driverId}', '${destination}', '${price}'`;
   try {
-    const data = await driverOfferModel.insertWithReturn(columns, values);
+    const data = await offerModel.insertWithReturn(columns, values);
     return res.status(201)
-      .json({ data: data.rows, success: true });
+      .json({ data: data.rows[0], success: true, message: 'offer created successfully' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 /**
- * @description - This method will handle the request coming to the url and fetch
- * data which is an object and return a promise object
+ * @description - This method will return a offer for particular driver
  *
- * @param { object } req - request
+ * @param {object} req - request
  *
- * @param { object } res - response
+ * @param {object} res - response
  *
- * @return { object } - it return object
+ * @return {object} - it return object
  */
 export const DriverRideOfferPage = async (req, res) => {
   const { id } = req.user.data;
   try {
-    const data = await driverOfferModel.select('*', `WHERE "driverId" = '${id}'`);
-    if (id !== data.rows[0].driverId) {
+    const data = await offerModel.select('*', `WHERE "driverId" = '${id}'`);
+    if (data.rowCount === 0) {
       return res.status(404).json(
         { data: [], message: 'data does not exist', success: false }
       );
@@ -56,19 +49,18 @@ export const DriverRideOfferPage = async (req, res) => {
   }
 };
 /**
- *@description - This method handle the request for getting all offers in the database
- and return a object which is a result of a promise.
+ *@description - This method fetch and return all offer object
 
- * @param { object } req - request
+ * @param {object} req - request
  *
- * @param { object } res - response
+ * @param {object} res - response
  *
- * @returns { object } - a promise of all offer object containing offers data
+ * @returns {object} - it return a data object and the number of the data
  */
 export const allOffer = async (req, res) => {
   let total;
   try {
-    const data = await driverOfferModel.select('*');
+    const data = await offerModel.select('*');
     total += data.rowCount;
     if (!data.rowCount) {
       return res.status(404).json(
@@ -83,16 +75,18 @@ export const allOffer = async (req, res) => {
 /**
  * @description - The method handle the request for editing a offer
  *
- *@return { object }- it return success message if the given id matches or invaild
+ *@return {object} - it return object message
 
- * @param { object } req - request
+ * @param {object} req - request
 
- * @param { object } res - response
+ * @param {object} res - response
  */
 export const editOffers = async (req, res) => {
   const driverId = req.user.data.id;
+  const { id } = req.params;
   try {
-    const data = await driverOfferModel.update(req.body, `WHERE "driverId" = '${driverId}'`);
+    const data = await offerModel
+      .update(req.body, `WHERE "driverId" = '${driverId}' AND id = '${id}'`);
     if (!data.rowCount) {
       return res.status(404).json(
         { data: [], message: 'data does not exist', success: false }
@@ -105,27 +99,26 @@ export const editOffers = async (req, res) => {
 };
 
 /**
- * @description - This method handle the request for deleting a offer and
- * return a success message if the given id matches the id of deleting item
+ * @description - This method delete a particular offer for a driver
  *
- * @param { object } req - request
+ * @param {object} req - request
  *
- * @param { object } res - response
+ * @param {object} res - response
  *
- * @returns { message } - it return a success message if the given id is valid or not match
+ * @returns {object} - it return object message
  */
 export const deleteOffer = async (req, res) => {
   const driverId = req.user.data.id;
   const { id } = req.params;
   try {
-    const data = await driverOfferModel
+    const data = await offerModel
       .deleteTableRow(`WHERE "driverId" = '${driverId}' AND id = '${id}'`);
     if (data.rowCount === 0) {
       return res.status(404).json(
         { data: [], message: 'data does not exist', success: false }
       );
     }
-    return res.status(201).json({ message: 'Deleted Successfully', success: true });
+    return res.status(201).json({ message: 'offer deleted successfully', success: true });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
