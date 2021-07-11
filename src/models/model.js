@@ -17,13 +17,13 @@ class Model {
 
   /**
  * @description - This method will fetch data from the database table.
- * it accept columns and clause.
+ * it accept columns and clause as its parameter.
  *
- * @param {object} columns -  columns we want to retrieve from
+ * @param {object} columns -  columns we want to retrieve data from
  *
  * @param {object} clause - a condition such as WHERE, ON, GROUPBY etc
  *
- * @returns {obj} - it return a result of query which is a promise
+ * @returns {object} - it return table object
  */
   async select(columns, clause) {
     let query = `SELECT ${columns} FROM ${this.table} `;
@@ -32,14 +32,14 @@ class Model {
   }
 
   /**
-   * @description This method will store data to the database and return the object of stored data.
-   * it accept column and values.
+   * @description This method puts data to the database and return the object of stored data.
+   * it takes column and values as its parameter.
  *
  * @param {colum} columns - the table column
  *
- * @param {values} values - the values for the the column
+ * @param {values} values - the values for the column
  *
- * @return {object} -  it return a promise of object data
+ * @return {object} - it return table object
  */
   async insertWithReturn(columns, values) {
     const query = `
@@ -47,24 +47,21 @@ class Model {
     VALUES (${values})
     RETURNING *
     `;
-    console.log(query);
     return this.pool.query(query);
   }
 
   /**
-   * @description - This method will update database table. It accept
-   * data as parameter which is information you are updating, and clause
-   * such as WHERE
+   * @description - This method will update database table.
    *
-   * @param {object} data - object containing information to be updated
+   * @param {object} data - data object with key-value pairs to be updated
    *
    * @param {clause} clause - such as WHERE clause
    *
-   * @return {message} - "success" if user object is validated and is valid
+   * @return {object} - it return object with a message
    */
   async update(data, clause) {
     let query = `UPDATE ${this.table} SET `;
-    const keys = Object.keys(data); // []
+    const keys = Object.keys(data);
     let sqlQuery;
     for (const key of keys) {
       if (key === keys[keys.length - 1]) {
@@ -84,8 +81,7 @@ class Model {
  *
  * @param {clause} clause - a cluse such as WHERE
  *
- * @return {message} - it return a success message if the id of the user is valid
- *otherwise "failed to delete your id does not match"
+ * @return {object} - it return object with a message
  */
   async deleteTableRow(clause) {
     const query = `DELETE FROM ${this.table} ${clause}`;

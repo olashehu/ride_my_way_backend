@@ -64,13 +64,13 @@ export const isLoggedIn = (req, res, next) => {
  * @description - This method validate user request to edit first and last name
  * It return error if user input is less than three character
  *
- * @param { object } req - request
+ * @param {object} req - request
  *
- * @param { object } res - response
+ * @param {object} res - response
  *
- * @param { next } next - it call next middleware in the proccess circle
+ * @param {next} next - next middleware in the proccess circle
  *
- * @returns { object } - response object
+ * @returns {object} - response object
  */
 export const validateProfile = async (req, res, next) => {
   const userSchema = {
@@ -85,16 +85,16 @@ export const validateProfile = async (req, res, next) => {
   return next();
 };
 /**
- * @description - This method validate driver input. if valid it pass the request body of the
- * user to next function in the route proccess chain.
+ * @description - This method validate driver input. if valid, it call the next middleware
+ * otherwise return error object
  *
- * @param { object } req - req
+ * @param {object} req - req
  *
- * @param { object } res - res
+ * @param {object} res - res
  *
- * @param { function } next - it call the next function in the route proccess chain
+ * @param {function} next - it call the next function in the route proccess chain
  *
- * @returns { object } - if error, return error object
+ * @returns {object} - if error, return error object
  */
 export const validateCreateDriver = async (req, res, next) => {
   const userSchema = {
@@ -111,7 +111,7 @@ export const validateCreateDriver = async (req, res, next) => {
 
   const { error } = Joi.validate(req.body, userSchema);
   if (error) {
-    return res.status(400).send(error.details[0].message);
+    return res.status(400).json({ message: error.details[0].message });
   }
 
   const { password } = req.body;

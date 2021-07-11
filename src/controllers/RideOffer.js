@@ -11,14 +11,14 @@ const offerModel = new Model('ride_offer');
  * @return {object} - it return data object
  */
 export const addOffer = async (req, res) => {
-  const driverId = req.user.data.id;
+  const { data: { id } } = req.user;
   const { destination, price } = req.body;
   const columns = '"driverId", destination, price';
-  const values = `'${driverId}', '${destination}', '${price}'`;
+  const values = `'${id}', '${destination}', '${price}'`;
   try {
     const data = await offerModel.insertWithReturn(columns, values);
     return res.status(201)
-      .json({ data: data.rows[0], success: true, message: 'offer created successfully' });
+      .json({ data: data.rows[0], message: 'offer created successfully', success: true });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -33,7 +33,7 @@ export const addOffer = async (req, res) => {
  * @return {object} - it return object
  */
 export const DriverRideOfferPage = async (req, res) => {
-  const { id } = req.user.data;
+  const { data: { id } } = req.user;
   try {
     const data = await offerModel.select('*', `WHERE "driverId" = '${id}'`);
     if (data.rowCount === 0) {
@@ -69,7 +69,7 @@ export const allOffer = async (req, res) => {
     }
     return res.status(201).json({ data: data.rows, total, success: true, });
   } catch (err) {
-    res.status(500).json({ message: 'internal server error' });
+    res.status(500).json({ message: err.message });
   }
 };
 /**

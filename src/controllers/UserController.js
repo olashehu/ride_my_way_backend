@@ -46,7 +46,7 @@ export const addUsers = async (req, res) => {
  * @returns {object} - return message object
  */
 export const editUserProfile = async (req, res) => {
-  const { id } = req.user.data;
+  const { data: { id } } = req.user;
   try {
     const data = await userModel.update(req.body, `WHERE "id" = '${id}'`);
     if (data.rowCount === 0) {
@@ -106,8 +106,7 @@ export const requestForRide = async (req, res) => {
     const columns = '"offerId", "driverId", "userId", destination, price, status';
     const values = `
     '${id}', '${driverId}', '${userId}', '${destination}', '${price}', 'pending'`;
-    const data = await rideHistoryModel.insertWithReturn(columns, values);
-    console.log(data);
+    await rideHistoryModel.insertWithReturn(columns, values);
     res.status(201).json({ message: 'offer created successfully', success: true });
   } catch (err) {
     return res.status(500).json({

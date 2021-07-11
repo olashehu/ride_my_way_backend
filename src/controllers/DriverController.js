@@ -21,8 +21,16 @@ export const addDriver = async (req, res) => {
   } = req.body;
   const columns = `"firstName", "lastName", address, phone, email,
   password, "carModel", "modelYear", "licencePlate"`;
-  // eslint-disable-next-line max-len
-  const values = `'${firstName}', '${lastName}', '${address}', '${phone}', '${email}', '${password}', '${carModel}', '${modelYear}', '${licencePlate}'`;
+  const values = `
+  '${firstName}',
+  '${lastName}',
+  '${address}',
+  '${phone}',
+  '${email}',
+  '${password}',
+  '${carModel}',
+  '${modelYear}',
+  '${licencePlate}'`;
   try {
     const data = await driverModel.insertWithReturn(columns, values);
     const { id } = data.rows[0];
@@ -48,7 +56,7 @@ export const addDriver = async (req, res) => {
  * @returns {object} - it return object message
  */
 export const editDriverProfile = async (req, res) => {
-  const { id } = req.user.data;
+  const { data: { id } } = req.user;
   try {
     const data = await driverModel.update(req.body, `WHERE id = ${id}`);
     if (data.rowCount === 0) {
@@ -58,7 +66,7 @@ export const editDriverProfile = async (req, res) => {
     }
     return res.status(201).json({ message: 'Profile updated successfully', success: true });
   } catch (err) {
-    res.status(500).json({ message: err.stack });
+    res.status(500).json({ message: err.message });
   }
 };
 
@@ -82,7 +90,7 @@ export const getAllDriver = async (req, res) => {
       );
     }
     return res.status(201).json({ data: data.rows, total, success: true });
-  } catch (error) {
-    return res.status(500).json({ message: 'internal server error' });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
   }
 };

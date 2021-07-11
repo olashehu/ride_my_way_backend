@@ -29,13 +29,6 @@ export const executeQueryArray = async (arr) => new Promise(async (resolve) => {
   resolve();
 });
 
-// export const executeQueryArray = async (queries) => {
-//   const executeQuery = queries.map(async (query) => {
-//     await pool.query(query);
-//   });
-//   await Promise.all(executeQuery);
-// };
-
 /**
  * @description - This method await the execution of each table in the array
  *

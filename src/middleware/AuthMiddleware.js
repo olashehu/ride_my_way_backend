@@ -10,14 +10,13 @@ const driverModel = new Model('drivers');
  * @description - It validate all user input, if valid it call the next
  * middleware else return error
  *
- * @param { object } req -request
+ * @param {object} req -request
  *
- * @param { object } res - response
+ * @param {object} res - response
  *
- * @param { object } next - the next middleware in the stack
+ * @param {object} next - the next middleware in the route
  *
- * @returns { object } - it return a valid data if all the requirement is pass
- * otherwise reject it
+ * @returns {object} - it return error object if inputs not valid
  */
 export const validateCreateUser = async (req, res, next) => {
   const userSchema = {
@@ -25,13 +24,13 @@ export const validateCreateUser = async (req, res, next) => {
     lastName: Joi.string().required(),
     address: Joi.string().max(100).required(),
     phone: Joi.string().max(11).required(),
-    email: Joi.string().max(256).required(),
+    email: Joi.string().email().max(256).required(),
     password: Joi.string().min(7).required()
   };
 
   const { error } = Joi.validate(req.body, userSchema);
   if (error) {
-    return res.status(400).send(error.details);
+    return res.status(400).json({ message: error.details[0].message });
   }
 
   const { password } = req.body;
@@ -40,9 +39,8 @@ export const validateCreateUser = async (req, res, next) => {
 };
 
 /**
- * @description - This method handle the request of user rigister. it checks
- * if email and phone number already exist. it return object with a message email
- * or phone already exist else it call the next middleware in the proccess chain
+ * @description - this method checks for phone and email in the database. if exist
+ * it return object message, otherwise it call the next middleware
  *
  * @param {object} req - request
  *
@@ -50,7 +48,7 @@ export const validateCreateUser = async (req, res, next) => {
  *
  * @param {object} next - it call the next middleware in the stack
  *
- * @returns {object} - it return object of message
+ * @returns {object} - it return object
  */
 export const checkUserDetails = async (req, res, next) => {
   const { email, phone } = req.body;
@@ -78,14 +76,14 @@ export const checkUserDetails = async (req, res, next) => {
 
 /**
  *
- * @description - This method handle the request for driver login. It compare the user input
- * password and the hashed password when user register. if matches it assign new token to user
+ * @description - this method checks user loggin details and return
+ * token and user objects
  *
- * @param { object } req - request
+ * @param {object} req - request
  *
- * @param { object } res - response
+ * @param {object} res - response
  *
- * @returns { object } - return user object  id, firstName and a token
+ * @returns {object} - it return data object
  */
 export const loginUser = async (req, res) => {
   const { password, email } = req.body;
@@ -105,7 +103,7 @@ export const loginUser = async (req, res) => {
     };
     const token = assignToken(userData);
     return res.status(201).json({
-      message: 'Welcome',
+      message: 'logged in successfully',
       userData,
       token
     });
@@ -115,15 +113,16 @@ export const loginUser = async (req, res) => {
 };
 
 /**
- * @description - it validate phone and email if they already exist in the database
+ * @description - this checks for phone and email in the database. if exist
+ * it return object message, otherwise it call the next middleware.
  *
  * @param {object} req - request
  *
  * @param {object} res - response
  *
- * @param {object} next - it call the next middleware in the route process chain
+ * @param {object} next - next middleware in the route process chain
  *
- * @returns {object} - it pass the driver information to the next middleware if valid
+ * @returns {object} - it return object with message and status
  */
 export const checkDriverDetails = async (req, res, next) => {
   const { email, phone } = req.body;
@@ -150,15 +149,14 @@ export const checkDriverDetails = async (req, res, next) => {
 };
 
 /**
- * @description - This method handle the request for driver login. It compare the user input
- * password and the hashed password when user register. if matches it assign new token to user
+ * @description - this method checks driver loggin details and return
+ * token and driver objects
  *
  * @param {object} req - request
  *
  * @param {object} res - response
  *
- * @return {object} - it return driver object containning data
- * id, firstName and a token
+ * @return {object} - return object driver and a token
  */
 export const DriverLogin = async (req, res) => {
   const { password, email, } = req.body;
@@ -179,10 +177,11 @@ export const DriverLogin = async (req, res) => {
     };
     const token = assignToken(driver);
     return res.status(201).json({
+      message: 'logged in successfully',
       driver,
       token
     });
-  } catch (error) {
-    res.send(error.message);
+  } catch (err) {
+    res.send(err.message);
   }
 };
