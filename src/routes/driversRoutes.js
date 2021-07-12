@@ -13,12 +13,12 @@ driverRoute.post('/driver/signup', validateCreateDriver, checkDriverDetails, add
 driverRoute.post('/driver/login', DriverLogin);
 driverRoute.post('/driver/ride-offer', isLoggedIn, addOffer);
 
-driverRoute.get('/drivers-page', getAllDriver);
-driverRoute.get('/driver/ride-offers-page', allOffer);
+driverRoute.get('/drivers', getAllDriver);
+driverRoute.get('/driver/ride-offers', allOffer);
 driverRoute.get('/driver/ride-history', isLoggedIn, DriverRideHistoryPage);
 driverRoute.get('/driver/ride-offer', isLoggedIn, DriverRideOfferPage);
 
-driverRoute.put('/driver/profile-page', isLoggedIn, validateProfile, editDriverProfile);
+driverRoute.put('/driver-profile', isLoggedIn, validateProfile, editDriverProfile);
 driverRoute.put('/driver/ride-offer/:id', isLoggedIn, editOffers);
 driverRoute.delete('/driver/ride-offer/:id', isLoggedIn, deleteOffer);
 export default driverRoute;

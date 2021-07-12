@@ -24,7 +24,7 @@ export const validateCreateUser = async (req, res, next) => {
     lastName: Joi.string().required(),
     address: Joi.string().max(100).required(),
     phone: Joi.string().max(11).required(),
-    email: Joi.string().email().max(256).required(),
+    email: Joi.string().email({ minDomainAtoms: 1 }).max(256).required(),
     password: Joi.string().min(7).required()
   };
 

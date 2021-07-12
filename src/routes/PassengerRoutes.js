@@ -12,5 +12,5 @@ passengerRoute.post('/user/login', loginUser);
 passengerRoute.post('/user/join-ride/:id', isLoggedIn, requestForRide);
 passengerRoute.put('/user/profile-page', isLoggedIn, validateProfile, editUserProfile);
 passengerRoute.get('/user/ride-history', isLoggedIn, UserRideHistoryPage);
-passengerRoute.get('/users-page', getAllUser);
+passengerRoute.get('/users', getAllUser);
 export default passengerRoute;
