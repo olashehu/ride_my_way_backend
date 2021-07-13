@@ -1,7 +1,7 @@
 import Joi from '@hapi/joi';
 import bcrypt from 'bcrypt';
 import Model from '../models/model';
-import assignToken from '../validations/validate';
+import assignToken from '../validations/Validate';
 
 const userModel = new Model('users');
 const driverModel = new Model('drivers');

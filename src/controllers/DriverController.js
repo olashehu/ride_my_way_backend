@@ -1,8 +1,5 @@
-// import jwt from 'jsonwebtoken';
 import Model from '../models/model';
-import assignToken from '../validations/validate';
-
-// const secretKey = process.env.SECRET_KEY;
+import assignToken from '../validations/Validate';
 
 const driverModel = new Model('drivers');
 

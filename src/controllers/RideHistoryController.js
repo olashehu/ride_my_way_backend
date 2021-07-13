@@ -5,7 +5,6 @@ import Model from '../models/model';
  this represent ride_history table in my database
  */
 const rideHistoryModel = new Model('ride_history');
-// const offerModel = new Model('ride_offer');
 
 /**
  * @description - This method return a particular driver ride-history
@@ -22,10 +21,10 @@ export const DriverRideHistoryPage = async (req, res) => {
     const data = await rideHistoryModel.select('*', `WHERE "driverId" = '${id}'`);
     if (data.rowCount === 0) {
       return res.status(404).json(
-        { data: [], message: 'You have not completed a ride', success: false }
+        { data: [], message: 'no history, as you have not completed any ride', success: false }
       );
     }
-    return res.status(201).json({ data: data.rows, success: true });
+    return res.status(200).json({ data: data.rows, success: true });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -46,9 +45,9 @@ export const UserRideHistoryPage = async (req, res) => {
     const data = await rideHistoryModel.select('*', `WHERE "userId" = '${id}'`);
     if (data.rowCount === 0) {
       return res.status(404)
-        .json({ data: [], message: 'You have not join a ride', success: false });
+        .json({ data: [], message: 'no history, as you have not join any ride', success: false });
     }
-    res.status(201).json({ data: data.rows, success: true });
+    res.status(200).json({ data: data.rows, success: true });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

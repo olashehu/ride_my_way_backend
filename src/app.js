@@ -2,7 +2,7 @@ import logger from 'morgan';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import passengerRoute from './routes/PassengerRoutes';
-import driverRoute from './routes/driversRoutes';
+import driverRoute from './routes/DriverRoutes';
 
 const app = express();
 app.use(logger('dev'));

@@ -6,7 +6,7 @@ import {
   addOffer, getAllOffer, deleteOffer, DriverRideOfferPage, editOffers
 } from '../controllers/RideOffer';
 import { checkDriverDetails, DriverLogin } from '../middleware/AuthMiddleware';
-import { isLoggedIn, validateCreateDriver, validateProfile } from '../validations/validate';
+import { isLoggedIn, validateCreateDriver, validateProfile } from '../validations/Validate';
 
 const driverRoute = express.Router();
 driverRoute.post('/driver/signup', validateCreateDriver, checkDriverDetails, addDriver);

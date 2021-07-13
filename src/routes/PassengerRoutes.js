@@ -4,7 +4,7 @@ import {
   addUsers, editUserProfile, getAllUser, requestForRide
 } from '../controllers/UserController';
 import { checkUserDetails, loginUser, validateCreateUser } from '../middleware/AuthMiddleware';
-import { isLoggedIn, validateProfile } from '../validations/validate';
+import { isLoggedIn, validateProfile } from '../validations/Validate';
 
 const passengerRoute = express.Router();
 passengerRoute.post('/user/signup', validateCreateUser, checkUserDetails, addUsers);
