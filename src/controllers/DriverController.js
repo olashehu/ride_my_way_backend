@@ -39,7 +39,7 @@ export const addDriver = async (req, res) => {
     res.status(201).json({
       driver,
       token,
-      message: 'User created successfully!'
+      message: 'driver created successfully!'
     });
   } catch (err) {
     res.status(500).json({ message: err.message, success: false });
@@ -61,10 +61,10 @@ export const editDriverProfile = async (req, res) => {
     const data = await driverModel.update(req.body, `WHERE id = ${id}`);
     if (data.rowCount === 0) {
       return res.status(404).json(
-        { data: [], Message: 'user does not exist', success: false }
+        { data: [], Message: 'driver does not exist', success: false }
       );
     }
-    return res.status(201).json({ message: 'Profile updated successfully', success: true });
+    return res.status(200).json({ message: 'Profile updated successfully', success: true });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -89,7 +89,7 @@ export const getAllDriver = async (req, res) => {
         { data: [], message: 'drivers does not exist', success: false }
       );
     }
-    return res.status(201).json({ data: data.rows, total, success: true });
+    return res.status(200).json({ data: data.rows, total, success: true });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }

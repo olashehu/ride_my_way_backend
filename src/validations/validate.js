@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import Joi from 'joi';
+import Joi from '@hapi/joi';
 import bcrypt from 'bcrypt';
 
 const secretKey = process.env.SECRET_KEY;
@@ -72,15 +72,14 @@ export const isLoggedIn = (req, res, next) => {
  *
  * @returns {object} - response object
  */
-export const validateProfile = async (req, res, next) => {
-  const userSchema = {
+export const validateProfile = (req, res, next) => {
+  const schema = Joi.object({
     firstName: Joi.string().min(3),
-    lastName: Joi.string().min(3),
-  };
-
-  const { error } = Joi.validate(req.body, userSchema);
+    lastName: Joi.string().min(3)
+  });
+  const { error } = schema.validate(req.body);
   if (error) {
-    return res.status(400).send(error.details[0].message);
+    return res.status(400).json({ message: error.details[0].message });
   }
   return next();
 };
@@ -97,23 +96,21 @@ export const validateProfile = async (req, res, next) => {
  * @returns {object} - if error, return error object
  */
 export const validateCreateDriver = async (req, res, next) => {
-  const userSchema = {
+  const userSchema = Joi.object({
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
-    address: Joi.string().max(100).required(),
+    address: Joi.string().required(),
     phone: Joi.string().max(11).required(),
-    email: Joi.string().email().max(256).required(),
+    email: Joi.string().email().required(),
     password: Joi.string().min(7).required(),
-    carModel: Joi.string().max(20).required(),
+    carModel: Joi.string().required(),
     modelYear: Joi.number().min(2005).max(2021).required(),
     licencePlate: Joi.string().required()
-  };
-
-  const { error } = Joi.validate(req.body, userSchema);
+  });
+  const { error } = userSchema.validate(req.body);
   if (error) {
     return res.status(400).json({ message: error.details[0].message });
   }
-
   const { password } = req.body;
   req.body.password = await bcrypt.hash(password, 10);
   return next();

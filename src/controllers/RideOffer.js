@@ -24,7 +24,7 @@ export const addOffer = async (req, res) => {
   }
 };
 /**
- * @description - This method will return a offer for particular driver
+ * @description - This method will return offer for a particular driver
  *
  * @param {object} req - request
  *
@@ -38,10 +38,10 @@ export const DriverRideOfferPage = async (req, res) => {
     const data = await offerModel.select('*', `WHERE "driverId" = '${id}'`);
     if (data.rowCount === 0) {
       return res.status(404).json(
-        { data: [], message: 'data does not exist', success: false }
+        { data: [], message: 'offer does not exist', success: false }
       );
     }
-    return res.status(201).json({
+    return res.status(200).json({
       data: data.rows, success: true
     });
   } catch (err) {
@@ -57,17 +57,17 @@ export const DriverRideOfferPage = async (req, res) => {
  *
  * @returns {object} - it return a data object and the number of the data
  */
-export const allOffer = async (req, res) => {
+export const getAllOffer = async (req, res) => {
   let total;
   try {
     const data = await offerModel.select('*');
     total += data.rowCount;
     if (!data.rowCount) {
-      return res.status(404).json(
-        { data: [], message: 'data does not exist', success: false }
+      return res.status(200).json(
+        { data: [], message: 'offer does not exist', success: false }
       );
     }
-    return res.status(201).json({ data: data.rows, total, success: true, });
+    return res.status(200).json({ data: data.rows, total, success: true, });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -89,10 +89,10 @@ export const editOffers = async (req, res) => {
       .update(req.body, `WHERE "driverId" = '${driverId}' AND id = '${id}'`);
     if (!data.rowCount) {
       return res.status(404).json(
-        { data: [], message: 'data does not exist', success: false }
+        { data: [], message: 'no offer to update', success: false }
       );
     }
-    return res.status(201).json({ message: 'You have updated offer successfully', success: true });
+    return res.status(200).json({ message: 'You have updated offer successfully', success: true });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
@@ -115,10 +115,10 @@ export const deleteOffer = async (req, res) => {
       .deleteTableRow(`WHERE "driverId" = '${driverId}' AND id = '${id}'`);
     if (data.rowCount === 0) {
       return res.status(404).json(
-        { data: [], message: 'data does not exist', success: false }
+        { data: [], message: 'no offer to delete', success: false }
       );
     }
-    return res.status(201).json({ message: 'offer deleted successfully', success: true });
+    return res.status(200).json({ message: 'offer deleted successfully', success: true });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

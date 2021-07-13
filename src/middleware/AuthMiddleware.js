@@ -1,4 +1,4 @@
-import Joi from 'joi';
+import Joi from '@hapi/joi';
 import bcrypt from 'bcrypt';
 import Model from '../models/model';
 import assignToken from '../validations/validate';
@@ -19,20 +19,18 @@ const driverModel = new Model('drivers');
  * @returns {object} - it return error object if inputs not valid
  */
 export const validateCreateUser = async (req, res, next) => {
-  const userSchema = {
+  const userSchema = Joi.object({
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
-    address: Joi.string().max(100).required(),
+    address: Joi.string().required(),
     phone: Joi.string().max(11).required(),
-    email: Joi.string().email({ minDomainAtoms: 1 }).max(256).required(),
+    email: Joi.string().email().required(),
     password: Joi.string().min(7).required()
-  };
-
-  const { error } = Joi.validate(req.body, userSchema);
+  });
+  const { error } = userSchema.validate(req.body);
   if (error) {
     return res.status(400).json({ message: error.details[0].message });
   }
-
   const { password } = req.body;
   req.body.password = await bcrypt.hash(password, 10);
   return next();
@@ -56,21 +54,21 @@ export const checkUserDetails = async (req, res, next) => {
     const emailExists = await userModel.select('*', `WHERE "email" = '${email}'`);
     const phoneNumberExists = await userModel.select('*', `WHERE "phone" = '${phone}'`);
     if (emailExists.rowCount) {
-      return res.status(404).send({
+      return res.status(409).send({
         message: 'Email already exists',
         status: false
       });
     }
 
     if (phoneNumberExists.rowCount) {
-      return res.status(404).send({
+      return res.status(409).send({
         message: 'Phone number already exists',
         status: false
       });
     }
     return next();
   } catch (err) {
-    res.send({ error: `${err.message}` });
+    res.send({ message: `${err.message}` });
   }
 };
 
@@ -94,7 +92,7 @@ export const loginUser = async (req, res) => {
     }
     const passwordIsValid = await bcrypt.compare(password, user.rows[0].password);
     if (!passwordIsValid) {
-      res.status(404).send({ message: 'Password does correct' });
+      res.status(404).send({ message: 'Password does not exist' });
     }
     const { id, firstName } = user.rows[0];
     const userData = {
@@ -102,7 +100,7 @@ export const loginUser = async (req, res) => {
       firstName
     };
     const token = assignToken(userData);
-    return res.status(201).json({
+    return res.status(200).json({
       message: 'logged in successfully',
       userData,
       token
@@ -130,21 +128,21 @@ export const checkDriverDetails = async (req, res, next) => {
     const emailExists = await driverModel.select('*', `WHERE "email" = '${email}'`);
     const phoneNumberExists = await driverModel.select('*', `WHERE "phone" = '${phone}'`);
     if (emailExists.rowCount) {
-      return res.status(404).send({
+      return res.status(409).send({
         message: 'Email already exists',
         status: false
       });
     }
 
     if (phoneNumberExists.rowCount) {
-      return res.status(404).send({
+      return res.status(409).send({
         message: 'Phone number already exists',
         status: false
       });
     }
     return next();
   } catch (err) {
-    res.send({ error: `${err.message}` });
+    res.send({ message: `${err.message}` });
   }
 };
 
@@ -176,7 +174,7 @@ export const DriverLogin = async (req, res) => {
       email
     };
     const token = assignToken(driver);
-    return res.status(201).json({
+    return res.status(200).json({
       message: 'logged in successfully',
       driver,
       token

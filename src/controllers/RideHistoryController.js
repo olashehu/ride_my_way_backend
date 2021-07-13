@@ -22,7 +22,7 @@ export const DriverRideHistoryPage = async (req, res) => {
     const data = await rideHistoryModel.select('*', `WHERE "driverId" = '${id}'`);
     if (data.rowCount === 0) {
       return res.status(404).json(
-        { data: [], message: 'data does not exist', success: false }
+        { data: [], message: 'You have not completed a ride', success: false }
       );
     }
     return res.status(201).json({ data: data.rows, success: true });
@@ -45,7 +45,8 @@ export const UserRideHistoryPage = async (req, res) => {
   try {
     const data = await rideHistoryModel.select('*', `WHERE "userId" = '${id}'`);
     if (data.rowCount === 0) {
-      return res.status(404).json({ data: [], message: 'data does not exist', success: false });
+      return res.status(404)
+        .json({ data: [], message: 'You have not join a ride', success: false });
     }
     res.status(201).json({ data: data.rows, success: true });
   } catch (err) {

@@ -19,8 +19,13 @@ export const addUsers = async (req, res) => {
     firstName, lastName, address, phone, email, password
   } = req.body;
   const columns = '"firstName", "lastName", address, phone, email, password';
-  // eslint-disable-next-line max-len
-  const values = `'${firstName}', '${lastName}', '${address}', '${phone}', '${email}', '${password}'`;
+  const values = `
+  '${firstName}',
+  '${lastName}',
+  '${address}',
+  '${phone}',
+  '${email}',
+  '${password}'`;
   try {
     const data = await userModel.insertWithReturn(columns, values);
     const { id } = data.rows[0];
@@ -50,9 +55,9 @@ export const editUserProfile = async (req, res) => {
   try {
     const data = await userModel.update(req.body, `WHERE "id" = '${id}'`);
     if (data.rowCount === 0) {
-      return res.status(404).json({ data: [], message: 'user does not exist' });
+      return res.status(404).json({ data: [], message: 'no user to update' });
     }
-    return res.status(201).json(
+    return res.status(200).json(
       { message: 'Profile updated successfully', success: true }
     );
   } catch (err) {
@@ -75,9 +80,9 @@ export const getAllUser = async (req, res) => {
     const data = await userModel.select('id, "firstName", "lastName", email');
     total += data.rowCount;
     if (!data.rowCount) {
-      return res.status(404).json({ data: [], message: 'data not exist', success: false });
+      return res.status(200).json({ data: [], message: 'user does not exist', success: false });
     }
-    return res.status(201).json({ data: data.rows, total, success: true });
+    return res.status(200).json({ data: data.rows, total, success: true });
   } catch (err) {
     return res.status(500).json({ message: 'internal server error', success: false });
   }
@@ -97,7 +102,7 @@ export const requestForRide = async (req, res) => {
   try {
     const offer = await offerModel
       .select('id, "driverId", destination, price', ` WHERE "id" = '${offerId}'`);
-    if (!offer.rowCount) {
+    if (offer.rowCount === 0) {
       return res.status(404).json({ data: [], message: 'this id has no offer', success: false });
     }
     const {
@@ -110,7 +115,7 @@ export const requestForRide = async (req, res) => {
     res.status(201).json({ message: 'offer created successfully', success: true });
   } catch (err) {
     return res.status(500).json({
-      error: err.stack,
+      error: err.message,
       success: false
     });
   }
