@@ -62,7 +62,7 @@ export const getAllOffer = async (req, res) => {
   try {
     const data = await offerModel.select('*');
     total += data.rowCount;
-    if (!data.rowCount) {
+    if (data.rowCount === 0) {
       return res.status(200).json(
         { data: [], message: 'offer does not exist', success: false }
       );

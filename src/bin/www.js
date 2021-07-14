@@ -39,7 +39,7 @@ const server = http.createServer(app);
 
 /**
  *
- * @param {obj} error - error
+ * @param {object} error - error
  *
  * @return {error} - handle specific listen errors with messages
  */
@@ -49,13 +49,11 @@ const onError = (error) => {
   }
   const bind = typeof port === 'string' ? `Pipe ${port}` : `Port ${port}`;
   switch (error.code) {
-    // eslint-disable-next-line no-alert
-    case 'EACCES': alert(`${bind} requires elevated privileges`);
+    case 'EACCES': console.error(`${bind} requires elevated privileges`);
       process.exit(1);
 
       break;
-      // eslint-disable-next-line no-alert
-    case 'EADDRINUSE': alert(`${bind} is already in use`);
+    case 'EADDRINUSE': console.error(`${bind} is already in use`);
       process.exit(1);
       break; default: throw error;
   }
@@ -64,7 +62,7 @@ const onError = (error) => {
 /**
  * Event listener for HTTP server "listening" event.
  *
- * @return {obj} -
+ * @return {object} -
  */
 const onListening = () => {
   const addr = server.address();
