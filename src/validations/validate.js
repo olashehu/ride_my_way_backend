@@ -1,8 +1,11 @@
 import jwt from 'jsonwebtoken';
 import Joi from '@hapi/joi';
 import bcrypt from 'bcrypt';
+import Model from '../models/model';
 
 const secretKey = process.env.SECRET_KEY;
+
+const offerModel = new Model('ride_offer');
 
 /**
  * @description - This method assign a token to user object t
@@ -114,6 +117,39 @@ export const validateCreateDriver = async (req, res, next) => {
   const { password } = req.body;
   req.body.password = await bcrypt.hash(password, 10);
   return next();
+};
+
+/**
+ *
+ * @param {object} req - request
+ *
+ * @param {object} res - response
+ *
+ * @param {function} next - it call the next middleware
+ *
+ * @returns {object} - object
+ */
+export const validateDestinationExist = async (req, res, next) => {
+  const { destination } = req.body;
+  const schema = Joi.object({
+    destination: Joi.string().required(),
+    price: Joi.number().integer().required()
+  });
+  const { error } = schema.validate(req.body);
+  if (error) return res.status(400).json({ message: error.details[0].message });
+  try {
+    const destinationExist = await offerModel
+      .select('*', ` WHERE destination = '${destination}'`);
+    if (destinationExist.rowCount) {
+      return res.status(409).json({
+        message: 'destination already exist, please enter a new destination!',
+        status: false
+      });
+    }
+    return next();
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
 };
 
 export default assignToken;

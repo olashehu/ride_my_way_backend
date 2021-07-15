@@ -58,7 +58,7 @@ export const DriverRideOfferPage = async (req, res) => {
  * @returns {object} - it return a data object and the number of the data
  */
 export const getAllOffer = async (req, res) => {
-  let total;
+  let total = 0;
   try {
     const data = await offerModel.select('*');
     total += data.rowCount;
