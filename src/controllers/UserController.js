@@ -1,5 +1,5 @@
 import Model from '../models/model';
-import assignToken from '../validations/Validate';
+import assignToken from '../middleware/Validations';
 
 const userModel = new Model('users');
 const rideHistoryModel = new Model('ride_history');
@@ -48,7 +48,7 @@ export const addUsers = async (req, res) => {
  *
  * @param {object} res - response object
  *
- * @returns {object} - return message object
+ * @returns {object} - return json object
  */
 export const editUserProfile = async (req, res) => {
   const { data: { id } } = req.user;
@@ -66,7 +66,8 @@ export const editUserProfile = async (req, res) => {
 };
 
 /**
- * @description - This method fetch all user in database and return data object
+ * @description - This method fetch and return all users
+ * in the database and return data object
  *
  * @param {object} req - request
  *
@@ -94,7 +95,7 @@ export const getAllUser = async (req, res) => {
  *
  * @param {object} res - response
  *
- * @returns {object} -
+ * @returns {object} - json object
  */
 export const requestForRide = async (req, res) => {
   const userId = req.user.data.id;

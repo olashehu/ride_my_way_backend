@@ -7,8 +7,8 @@ import {
 } from '../controllers/RideOffer';
 import { checkDriverDetails, DriverLogin } from '../middleware/AuthMiddleware';
 import {
-  isLoggedIn, validateCreateDriver, validateDestinationExist, validateProfile
-} from '../validations/Validate';
+  isLoggedIn, validateCreateDriver, validateDestinationExist, validateId, validateProfile
+} from '../middleware/Validations';
 
 const driverRoute = express.Router();
 driverRoute.post('/driver/signup', validateCreateDriver, checkDriverDetails, addDriver);
@@ -22,5 +22,5 @@ driverRoute.get('/driver/ride-offer', isLoggedIn, DriverRideOfferPage);
 
 driverRoute.put('/driver-profile', isLoggedIn, validateProfile, editDriverProfile);
 driverRoute.put('/driver/ride-offer/:id', isLoggedIn, editOffers);
-driverRoute.delete('/driver/ride-offer/:id', isLoggedIn, deleteOffer);
+driverRoute.delete('/driver/ride-offer/:id', isLoggedIn, validateId, deleteOffer);
 export default driverRoute;

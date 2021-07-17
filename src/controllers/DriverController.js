@@ -1,5 +1,5 @@
 import Model from '../models/model';
-import assignToken from '../validations/Validate';
+import assignToken from '../middleware/Validations';
 
 const driverModel = new Model('drivers');
 
@@ -42,7 +42,7 @@ export const addDriver = async (req, res) => {
  *
  * @param {object} res - response
  *
- * @returns {object} - it return object message
+ * @returns {object} - it return json object
  */
 export const editDriverProfile = async (req, res) => {
   const { data: { id } } = req.user;
@@ -60,7 +60,7 @@ export const editDriverProfile = async (req, res) => {
 };
 
 /**
- * @description - This method fetch all driver in database
+ * @description - This method fetch all driver in the database
  *
  * @param {object} req - request
  *

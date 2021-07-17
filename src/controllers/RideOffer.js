@@ -25,12 +25,13 @@ export const addOffer = async (req, res) => {
 };
 /**
  * @description - This method will return offer for a particular driver
+ * from the database
  *
  * @param {object} req - request
  *
  * @param {object} res - response
  *
- * @return {object} - it return object
+ * @return {object} - it return json object
  */
 export const DriverRideOfferPage = async (req, res) => {
   const { data: { id } } = req.user;
@@ -74,12 +75,12 @@ export const getAllOffer = async (req, res) => {
 };
 /**
  * @description - The method handle the request for editing a offer
- *
- *@return {object} - it return object message
 
  * @param {object} req - request
 
  * @param {object} res - response
+
+ * @returns {object} - it return json object
  */
 export const editOffers = async (req, res) => {
   const driverId = req.user.data.id;
@@ -105,7 +106,7 @@ export const editOffers = async (req, res) => {
  *
  * @param {object} res - response
  *
- * @returns {object} - it return object message
+ * @returns {object} - it return json object
  */
 export const deleteOffer = async (req, res) => {
   const driverId = req.user.data.id;

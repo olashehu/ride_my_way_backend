@@ -8,11 +8,12 @@ const secretKey = process.env.SECRET_KEY;
 const offerModel = new Model('ride_offer');
 
 /**
- * @description - This method assign a token to user object t
+ * @description - This method assign a token to user object
  *
- * @param { object } data - driver object
+ * @param {object} data - user/driver object
  *
- * @return { object } - token with driver object data
+ * @return {object} - it return token with data object containing
+ * user/driver information.
  */
 const assignToken = (data) => {
   const tokes = jwt.sign({
@@ -24,15 +25,17 @@ const assignToken = (data) => {
 };
 
 /**
- * @description - This method validate user token
+ * @description - This method verify the token and the token
+ * get assign to a user property of req object. if valid it
+ * call the next middleware otherwise, it return json object.
  *
- * @param { object } req - request bject
+ * @param {object} req - request bject
  *
- * @param { object } res - response object
+ * @param {object} res - response object
  *
- * @param { object } next - it call the next function in the route proccess chain
+ * @param {function} next - the next middleware
  *
- * @return { object } - response object
+ * @return {object} - object
  */
 export const isLoggedIn = (req, res, next) => {
   const token = req.headers.authorization;
@@ -64,16 +67,16 @@ export const isLoggedIn = (req, res, next) => {
   }
 };
 /**
- * @description - This method validate user request to edit first and last name
- * It return error if user input is less than three character
+ * @description - This method validate user request to edit information
+ * It return json object if invalid otherwise, it call the next middleware
  *
  * @param {object} req - request
  *
  * @param {object} res - response
  *
- * @param {next} next - next middleware in the proccess circle
+ * @param {function} next - the next middleware
  *
- * @returns {object} - response object
+ * @returns {object} - object
  */
 export const validateProfile = (req, res, next) => {
   const schema = Joi.object({
@@ -87,16 +90,16 @@ export const validateProfile = (req, res, next) => {
   return next();
 };
 /**
- * @description - This method validate driver input. if valid, it call the next middleware
- * otherwise return error object
+ * @description - This method validate driver inputs, if inputs not valid, it return
+ * json object, otherwise, it hash the password and call the next middleware
  *
  * @param {object} req - req
  *
  * @param {object} res - res
  *
- * @param {function} next - it call the next function in the route proccess chain
+ * @param {function} next - the next middleware
  *
- * @returns {object} - if error, return error object
+ * @returns {object} - object
  */
 export const validateCreateDriver = async (req, res, next) => {
   const userSchema = Joi.object({
@@ -120,12 +123,14 @@ export const validateCreateDriver = async (req, res, next) => {
 };
 
 /**
+ * @description - this method checks for destination in offer table.
+ * if exist, it return json object, else it call the next middleware.
  *
  * @param {object} req - request
  *
  * @param {object} res - response
  *
- * @param {function} next - it call the next middleware
+ * @param {function} next - the next middleware
  *
  * @returns {object} - object
  */
@@ -149,6 +154,32 @@ export const validateDestinationExist = async (req, res, next) => {
     return next();
   } catch (err) {
     return res.status(500).json({ message: err.message });
+  }
+};
+
+/**
+ * @description - this method check for driverId in offer table and
+ * compare it with the id of the token. if it matches it call the next
+ * middleware, otherwise, it return json object.
+ *
+ * @param {object} req - request
+ *
+ * @param {object} res - response
+ *
+ * @param {function} next - next middleware
+ *
+ * @returns {object} - json object
+ */
+export const validateId = async (req, res, next) => {
+  const { data: { id } } = req.user;
+  try {
+    const isValidId = await offerModel.select('*', `WHERE "driverId" = '${id}'`);
+    if (isValidId.rowCount === 0) {
+      return res.status(401).json({ message: 'unauthorize to delete this offer', success: false });
+    }
+    return next();
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
 };
 

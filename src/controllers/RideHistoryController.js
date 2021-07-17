@@ -8,12 +8,12 @@ const rideHistoryModel = new Model('ride_history');
 
 /**
  * @description - This method return a particular driver ride-history
- *
- * @return {object} - it return history object
 
  * @param {object} req - request
 
  * @param {object} res - response
+
+* @return {object} - it return json object
  */
 export const DriverRideHistoryPage = async (req, res) => {
   const { id } = req.user.data;
@@ -33,11 +33,11 @@ export const DriverRideHistoryPage = async (req, res) => {
 /**
  * @description - it return a particular passenger ride-history object
  *
- * @return {object} - it return passenger history object
- *
  * @param {object} req - request
  *
  * @param {object} res - response
+ *
+ *@returns {object} - it return json object
  */
 export const UserRideHistoryPage = async (req, res) => {
   const { id } = req.user.data;

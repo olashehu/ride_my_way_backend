@@ -1,22 +1,22 @@
 import Joi from '@hapi/joi';
 import bcrypt from 'bcrypt';
 import Model from '../models/model';
-import assignToken from '../validations/Validate';
+import assignToken from './Validations';
 
 const userModel = new Model('users');
 const driverModel = new Model('drivers');
 
 /**
  * @description - It validate all user input, if valid it call the next
- * middleware else return error
+ * middleware else return json object
  *
  * @param {object} req -request
  *
  * @param {object} res - response
  *
- * @param {object} next - the next middleware in the route
+ * @param {function} next - the next middleware in the route
  *
- * @returns {object} - it return error object if inputs not valid
+ * @returns {object} - it return json object if inputs not valid
  */
 export const validateCreateUser = async (req, res, next) => {
   const userSchema = Joi.object({
@@ -37,16 +37,16 @@ export const validateCreateUser = async (req, res, next) => {
 };
 
 /**
- * @description - this method checks for phone and email in the database. if exist
- * it return object message, otherwise it call the next middleware
+ * @description - this method checks for phone and email in the database.
+ * it return json object if exist otherwise it call the next middleware
  *
  * @param {object} req - request
  *
  * @param {object} res - response
  *
- * @param {object} next - it call the next middleware in the stack
+ * @param {function} next - the next middleware
  *
- * @returns {object} - it return object
+ * @returns {object} - it return json object
  */
 export const checkUserDetails = async (req, res, next) => {
   const { email, phone } = req.body;
@@ -74,8 +74,10 @@ export const checkUserDetails = async (req, res, next) => {
 
 /**
  *
- * @description - this method checks user loggin details and return
- * token and user objects
+ * @description - this method checks email in the database.
+ * if invalid it return json object otherwise, it compare
+ * the password with the hashed password in the database
+ * if match it assign the user object a token and logged-in the user.
  *
  * @param {object} req - request
  *
@@ -97,7 +99,8 @@ export const loginUser = async (req, res) => {
     const { id, firstName } = user.rows[0];
     const userData = {
       id,
-      firstName
+      firstName,
+      email
     };
     const token = assignToken(userData);
     return res.status(200).json({
@@ -111,16 +114,16 @@ export const loginUser = async (req, res) => {
 };
 
 /**
- * @description - this checks for phone and email in the database. if exist
- * it return object message, otherwise it call the next middleware.
+ * @description - this method checks for phone and email in the database.
+ * it return json object if exist otherwise it call the next middleware
  *
  * @param {object} req - request
  *
  * @param {object} res - response
  *
- * @param {object} next - next middleware in the route process chain
+ * @param {function} next - the next middleware
  *
- * @returns {object} - it return object with message and status
+ * @returns {object} - it json object
  */
 export const checkDriverDetails = async (req, res, next) => {
   const { email, phone } = req.body;
@@ -147,8 +150,10 @@ export const checkDriverDetails = async (req, res, next) => {
 };
 
 /**
- * @description - this method checks driver loggin details and return
- * token and driver objects
+ * @description - this method checks email in the database.
+ * if invalid it return json object otherwise, it compare
+ * the password with the hashed password in the database
+ * if match it assign the driver object a token and logged-in the driver.
  *
  * @param {object} req - request
  *
