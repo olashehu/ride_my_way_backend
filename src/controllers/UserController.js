@@ -100,12 +100,14 @@ export const getAllUser = async (req, res) => {
 export const requestForRide = async (req, res) => {
   const userId = req.user.data.id;
   const offerId = req.params.id;
+  const { data: { firstName } } = req.user;
   try {
     const offer = await offerModel
       .select('id, "driverId", destination, price', ` WHERE "id" = '${offerId}'`);
     if (offer.rowCount === 0) {
       return res.status(404).json({ data: [], message: 'this id has no offer', success: false });
     }
+
     const {
       id, driverId, destination, price
     } = offer.rows[0];
@@ -113,7 +115,10 @@ export const requestForRide = async (req, res) => {
     const values = `
     '${id}', '${driverId}', '${userId}', '${destination}', '${price}', 'pending'`;
     await rideHistoryModel.insertWithReturn(columns, values);
-    res.status(201).json({ message: 'offer created successfully', success: true });
+    res.status(201).json({
+      message: `Thank you for choosing ride-my-way driver ${firstName}`,
+      success: true
+    });
   } catch (err) {
     return res.status(500).json({
       error: err.message,

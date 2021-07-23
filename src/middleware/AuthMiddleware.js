@@ -29,7 +29,7 @@ export const validateCreateUser = async (req, res, next) => {
   });
   const { error } = userSchema.validate(req.body);
   if (error) {
-    return res.status(400).json({ message: error.details[0].message });
+    return res.status(400).json({ message: error.details[0].message, success: false });
   }
   const { password } = req.body;
   req.body.password = await bcrypt.hash(password, 10);
@@ -56,14 +56,14 @@ export const checkUserDetails = async (req, res, next) => {
     if (emailExists.rowCount) {
       return res.status(409).send({
         message: 'Email already exists',
-        status: false
+        success: false
       });
     }
 
     if (phoneNumberExists.rowCount) {
       return res.status(409).send({
         message: 'Phone number already exists',
-        status: false
+        success: false
       });
     }
     return next();
@@ -90,11 +90,11 @@ export const loginUser = async (req, res) => {
   try {
     const user = await userModel.select('*', `WHERE "email" = '${email}'`);
     if (!user.rowCount) {
-      return res.status(404).send({ message: 'Email does not exist' });
+      return res.status(404).send({ message: 'Email or Password does not exist', success: false });
     }
     const passwordIsValid = await bcrypt.compare(password, user.rows[0].password);
     if (!passwordIsValid) {
-      res.status(404).send({ message: 'Password does not exist' });
+      res.status(404).send({ message: 'Password or Email does not exist', success: false });
     }
     const { id, firstName } = user.rows[0];
     const userData = {
@@ -133,14 +133,14 @@ export const checkDriverDetails = async (req, res, next) => {
     if (emailExists.rowCount) {
       return res.status(409).send({
         message: 'Email already exists',
-        status: false
+        success: false
       });
     }
 
     if (phoneNumberExists.rowCount) {
       return res.status(409).send({
         message: 'Phone number already exists',
-        status: false
+        success: false
       });
     }
     return next();
@@ -166,11 +166,11 @@ export const DriverLogin = async (req, res) => {
   try {
     const user = await driverModel.select('*', `WHERE "email" = '${email}'`);
     if (!user.rowCount) {
-      return res.status(404).send({ message: 'Email does not exist' });
+      return res.status(404).send({ message: 'Email or Password does not exist', success: false });
     }
     const passwordIsValid = await bcrypt.compare(password, user.rows[0].password);
     if (!passwordIsValid) {
-      res.status(404).send({ message: 'Password does correct' });
+      res.status(404).send({ message: 'Password or Email does correct', success: false });
     }
     const { id, firstName } = user.rows[0];
     const driver = {

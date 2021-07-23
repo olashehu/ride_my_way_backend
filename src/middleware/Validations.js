@@ -6,6 +6,7 @@ import Model from '../models/model';
 const secretKey = process.env.SECRET_KEY;
 
 const offerModel = new Model('ride_offer');
+const rideHistoryModel = new Model('ride_history');
 
 /**
  * @description - This method assign a token to user object
@@ -115,7 +116,7 @@ export const validateCreateDriver = async (req, res, next) => {
   });
   const { error } = userSchema.validate(req.body);
   if (error) {
-    return res.status(400).json({ message: error.details[0].message });
+    return res.status(400).json({ message: error.details[0].message, success: false });
   }
   const { password } = req.body;
   req.body.password = await bcrypt.hash(password, 10);
@@ -176,6 +177,30 @@ export const validateId = async (req, res, next) => {
     const isValidId = await offerModel.select('*', `WHERE "driverId" = '${id}'`);
     if (isValidId.rowCount === 0) {
       return res.status(401).json({ message: 'unauthorize to delete this offer', success: false });
+    }
+    return next();
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+/**
+ *
+ * @param {object} req - requesr
+ *
+ * @param {object} res - response
+ *
+ * @param {function} next - the next middleware
+ *
+ *@return {object} - json object
+ */
+export const offerExist = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const dataExistInHistory = await rideHistoryModel.select('*', ` WHERE "offerId" = ${id}`);
+    console.log(dataExistInHistory);
+    if (dataExistInHistory.rowCount > 0) {
+      return res.status(409).json({ message: " You can't join same offer", success: false });
     }
     return next();
   } catch (error) {
