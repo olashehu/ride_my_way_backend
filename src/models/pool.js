@@ -4,4 +4,6 @@ import { connectionString } from '../settings';
 
 dotenv.config();
 
-export const pool = new Pool({ connectionString });
+const pool = new Pool({ connectionString });
+
+export default pool;

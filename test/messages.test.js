@@ -1,14 +1,16 @@
 import { expect, server, BASE_URL } from './setup';
 
+// eslint-disable-next-line no-undef
 describe('Messages', () => {
-  it('get messages page', done => {
+  // eslint-disable-next-line no-undef
+  it('get messages page', (done) => {
     server
       .get(`${BASE_URL}/messages`)
       .expect(200)
       .end((err, res) => {
         expect(res.status).to.equal(200);
         expect(res.body.messages).to.be.instanceOf(Array);
-        res.body.messages.forEach(m => {
+        res.body.messages.forEach((m) => {
           expect(m).to.have.property('name');
           expect(m).to.have.property('message');
         });
@@ -17,7 +19,8 @@ describe('Messages', () => {
   });
 });
 
-it('posts messages', done => {
+// eslint-disable-next-line no-undef
+it('posts messages', (done) => {
   const data = { name: 'some name', message: 'new message' };
   server
     .post(`${BASE_URL}/messages`)
@@ -26,7 +29,7 @@ it('posts messages', done => {
     .end((err, res) => {
       expect(res.status).to.equal(200);
       expect(res.body.messages).to.be.instanceOf(Array);
-      res.body.messages.forEach(m => {
+      res.body.messages.forEach((m) => {
         expect(m).to.have.property('id');
         expect(m).to.have.property('name', data.name);
         expect(m).to.have.property('message', `SAYS: ${data.message}`);

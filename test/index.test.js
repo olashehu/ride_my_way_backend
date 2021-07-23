@@ -1,7 +1,9 @@
 import { expect, server, BASE_URL } from './setup';
 
+// eslint-disable-next-line no-undef
 describe('Index page test', () => {
-  it('gets base url', done => {
+  // eslint-disable-next-line no-undef
+  it('gets base url', (done) => {
     server
       .get(`${BASE_URL}/`)
       .expect(200)

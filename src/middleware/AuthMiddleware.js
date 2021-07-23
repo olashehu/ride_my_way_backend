@@ -1,179 +1,190 @@
-import jwt from 'jsonwebtoken';
-import Joi from 'joi';
+import Joi from '@hapi/joi';
 import bcrypt from 'bcrypt';
 import Model from '../models/model';
+import assignToken from './Validations';
 
-const secretKey = process.env.SECRET_KEY;
 const userModel = new Model('users');
 const driverModel = new Model('drivers');
+
+/**
+ * @description - It validate all user input, if valid it call the next
+ * middleware else return json object
+ *
+ * @param {object} req -request
+ *
+ * @param {object} res - response
+ *
+ * @param {function} next - the next middleware in the route
+ *
+ * @returns {object} - it return json object if inputs not valid
+ */
 export const validateCreateUser = async (req, res, next) => {
-  const userSchema = {
+  const userSchema = Joi.object({
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
-    address: Joi.string().max(50).required(),
+    address: Joi.string().required(),
     phone: Joi.string().max(11).required(),
-    email: Joi.string().max(50).required(),
+    email: Joi.string().email().required(),
     password: Joi.string().min(7).required()
-  };
-
-  const { error } = Joi.validate(req.body, userSchema);
+  });
+  const { error } = userSchema.validate(req.body);
   if (error) {
-    return res.status(400).send(error.details);
+    return res.status(400).json({ message: error.details[0].message, success: false });
   }
-
   const { password } = req.body;
   req.body.password = await bcrypt.hash(password, 10);
   return next();
 };
 
+/**
+ * @description - this method checks for phone and email in the database.
+ * it return json object if exist otherwise it call the next middleware
+ *
+ * @param {object} req - request
+ *
+ * @param {object} res - response
+ *
+ * @param {function} next - the next middleware
+ *
+ * @returns {object} - it return json object
+ */
 export const checkUserDetails = async (req, res, next) => {
-  // Check if email and phone exist.
   const { email, phone } = req.body;
   try {
     const emailExists = await userModel.select('*', `WHERE "email" = '${email}'`);
     const phoneNumberExists = await userModel.select('*', `WHERE "phone" = '${phone}'`);
     if (emailExists.rowCount) {
-      return res.status(400).send({
+      return res.status(409).send({
         message: 'Email already exists',
-        status: false
+        success: false
       });
     }
 
     if (phoneNumberExists.rowCount) {
-      return res.status(400).send({
+      return res.status(409).send({
         message: 'Phone number already exists',
-        status: false
+        success: false
       });
     }
     return next();
-  } catch (error) {
-    res.send({ erroe: `${error.message}` });
+  } catch (err) {
+    res.send({ message: `${err.message}` });
   }
 };
 
+/**
+ *
+ * @description - this method checks email in the database.
+ * if invalid it return json object otherwise, it compare
+ * the password with the hashed password in the database
+ * if match it assign the user object a token and logged-in the user.
+ *
+ * @param {object} req - request
+ *
+ * @param {object} res - response
+ *
+ * @returns {object} - it return data object
+ */
 export const loginUser = async (req, res) => {
   const { password, email } = req.body;
   try {
-    // Select user with req.body.email, if not exist send error
     const user = await userModel.select('*', `WHERE "email" = '${email}'`);
     if (!user.rowCount) {
-      return res.status(400).send({ message: 'Email does not exist' });
+      return res.status(404).send({ message: 'Email or Password does not exist', success: false });
     }
-    // compare crypted password and see if it match, if not match send error
     const passwordIsValid = await bcrypt.compare(password, user.rows[0].password);
     if (!passwordIsValid) {
-      res.status(400).send({ message: 'Password does correct' });
+      res.status(404).send({ message: 'Password or Email does not exist', success: false });
     }
-    // if password is valid
-    const { id, first_name } = user.rows[0];
+    const { id, firstName } = user.rows[0];
     const userData = {
       id,
-      first_name
+      firstName,
+      email
     };
-    const token = jwt.sign({
-      userData
-    }, secretKey, {
-      expiresIn: '24h'
-    });
+    const token = assignToken(userData);
     return res.status(200).json({
-      msg: 'Welcome',
+      message: 'logged in successfully',
       userData,
       token
     });
-  } catch (error) {
-    res.send(error.message);
+  } catch (err) {
+    res.send(err.message);
   }
 };
 
+/**
+ * @description - this method checks for phone and email in the database.
+ * it return json object if exist otherwise it call the next middleware
+ *
+ * @param {object} req - request
+ *
+ * @param {object} res - response
+ *
+ * @param {function} next - the next middleware
+ *
+ * @returns {object} - it json object
+ */
 export const checkDriverDetails = async (req, res, next) => {
-  // Check if email and phone exist.
   const { email, phone } = req.body;
   try {
     const emailExists = await driverModel.select('*', `WHERE "email" = '${email}'`);
     const phoneNumberExists = await driverModel.select('*', `WHERE "phone" = '${phone}'`);
     if (emailExists.rowCount) {
-      return res.status(400).send({
+      return res.status(409).send({
         message: 'Email already exists',
-        status: false
+        success: false
       });
     }
 
     if (phoneNumberExists.rowCount) {
-      return res.status(400).send({
+      return res.status(409).send({
         message: 'Phone number already exists',
-        status: false
+        success: false
       });
     }
     return next();
-  } catch (error) {
-    res.send({ erroe: `${error.message}` });
+  } catch (err) {
+    res.send({ message: `${err.message}` });
   }
 };
 
-// Driver login endpoint
+/**
+ * @description - this method checks email in the database.
+ * if invalid it return json object otherwise, it compare
+ * the password with the hashed password in the database
+ * if match it assign the driver object a token and logged-in the driver.
+ *
+ * @param {object} req - request
+ *
+ * @param {object} res - response
+ *
+ * @return {object} - return object driver and a token
+ */
 export const DriverLogin = async (req, res) => {
   const { password, email, } = req.body;
   try {
-    // Select user with req.body.email, if not exist send error
     const user = await driverModel.select('*', `WHERE "email" = '${email}'`);
     if (!user.rowCount) {
-      return res.status(400).send({ message: 'Email does not exist' });
+      return res.status(404).send({ message: 'Email or Password does not exist', success: false });
     }
-    // compare crypted password and see if it match, if not match send error
     const passwordIsValid = await bcrypt.compare(password, user.rows[0].password);
     if (!passwordIsValid) {
-      res.status(400).send({ message: 'Password does correct' });
+      res.status(404).send({ message: 'Password or Email does correct', success: false });
     }
-    // if password is valid
-    const { id, first_name} = user.rows[0];
+    const { id, firstName } = user.rows[0];
     const driver = {
       id,
-      first_name,
+      firstName,
       email
     };
-    const token = jwt.sign({
-      driver,
-    }, secretKey, {
-      expiresIn: '24h'
-    });
+    const token = assignToken(driver);
     return res.status(200).json({
-      // message: 'welcome',
+      message: 'logged in successfully',
       driver,
       token
     });
-  } catch (error) {
-    res.send(error.message);
-  }
-};
-
-// function checking if user token is valid or expire.
-export const isLoggedIn = (req, res, next) => {
-  const token = req.headers.authorization;
-  let tokenValue;
-  try {
-    if (token) {
-      tokenValue = token.split(' ')[1];
-      const userData = jwt.verify(tokenValue, secretKey);
-      req.user = userData;
-      if (userData) {
-        next();
-      } else {
-        res.status(401).send({
-          status: false,
-          message: 'Authentication token is invalid or expired'
-        });
-      }
-    } else {
-      res.status(401).send({
-        status: false,
-        message: 'Authentication token does not exist'
-      });
-    }
-  } catch (error) {
-    // console.log(error);
-    res.status(401).send({
-      status: false,
-      message: 'Authentication token is invalid or expired'
-    });
+  } catch (err) {
+    res.send(err.message);
   }
 };

@@ -1,36 +1,54 @@
 import Model from '../models/model';
 
-const RideHistoryModel = new Model('ride_history');
+/**
+ *@import - my model class and create a new instance of that model.
+ this represent ride_history table in my database
+ */
+const rideHistoryModel = new Model('ride_history');
+
+/**
+ * @description - This method return a particular driver ride-history
+
+ * @param {object} req - request
+
+ * @param {object} res - response
+
+* @return {object} - it return json object
+ */
 export const DriverRideHistoryPage = async (req, res) => {
-  const { id } = req.user.driver;
+  const { id } = req.user.data;
   try {
-    const data = await RideHistoryModel.select('*', `WHERE "driver_id" = '${id}'`);
-    res.status(200).json({ msg: data.rows });
+    const data = await rideHistoryModel.select('*', `WHERE "driverId" = '${id}'`);
+    if (data.rowCount === 0) {
+      return res.status(404).json(
+        { data: [], message: 'no history, as you have not completed any ride', success: false }
+      );
+    }
+    return res.status(200).json({ data: data.rows, success: true });
   } catch (err) {
-    res.status(400).json({ msg: err.stack });
+    res.status(500).json({ message: err.message });
   }
 };
 
+/**
+ * @description - it return a particular passenger ride-history object
+ *
+ * @param {object} req - request
+ *
+ * @param {object} res - response
+ *
+ *@returns {object} - it return json object
+ */
 export const UserRideHistoryPage = async (req, res) => {
-  const { id } = req.user;
+  const { id } = req.user.data;
   try {
-    const data = await RideHistoryModel.select('*', `WHERE "user_id" = '${id}'`);
-    res.status(200).json({ msg: data.rows });
+    const data = await rideHistoryModel.select('*', `WHERE "userId" = '${id}'`);
+    if (data.rowCount === 0) {
+      return res.status(404)
+        .json({ data: [], message: 'no history, as you have not join any ride', success: false });
+    }
+    res.status(200).json({ data: data.rows, success: true });
   } catch (err) {
-    res.status(400).json({ msg: err.stack });
-  }
-};
-
-export const addHistory = async (req, res) => {
-  const {
-    driverId, offerId, userId, destination, price, status
-  } = req.body;
-  const columns = 'driver_id, offer_id, user_id, destination, price, status';
-  const values = `'${driverId}', '${offerId}', '${userId}', '${destination}', '${price}', '${status}'`;
-  try {
-    const data = await RideHistoryModel.insertWithReturn(columns, values);
-    res.status(200).json({ msg: data.rows });
-  } catch (err) {
-    res.status(400).json({ msg: err.stack });
+    res.status(500).json({ message: err.message });
   }
 };

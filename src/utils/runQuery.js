@@ -1,9 +1,18 @@
 import {
   dropTables,
-  createTables
+  createTables,
+  referenceTable
 } from './queryFunctions';
 
-(async () => {
+/**
+ * @description - This method will drop, create, and refernce. it will await each execution
+ * of functions
+ *
+ * @return { void }
+ */
+const queryRun = async () => {
   await dropTables();
   await createTables();
-})();
+  await referenceTable();
+};
+queryRun();

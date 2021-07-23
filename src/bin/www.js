@@ -6,9 +6,12 @@ import debug from 'debug';
 import http from 'http';
 import app from '../app';
 /**
- * Normalize a port into a number, string, or false.
+ *
+ * @param {val} val - val
+ *
+ * @return {number} - number
  */
-const normalizePort = val => {
+const normalizePort = (val) => {
   const port = parseInt(val, 10);
   if (Number.isNaN(port)) {
     // named pipe
@@ -35,25 +38,31 @@ const server = http.createServer(app);
 // next code block goes here
 
 /**
- * Event listener for HTTP server "error" event.
+ *
+ * @param {object} error - error
+ *
+ * @return {error} - handle specific listen errors with messages
  */
-const onError = error => {
+const onError = (error) => {
   if (error.syscall !== 'listen') {
     throw error;
   }
   const bind = typeof port === 'string' ? `Pipe ${port}` : `Port ${port}`;
-  // handle specific listen errors with friendly messages
   switch (error.code) {
-  case 'EACCES': alert(`${bind} requires elevated privileges`);
-    process.exit(1);
-    break; case 'EADDRINUSE': alert(`${bind} is already in use`);
-    process.exit(1);
-    break; default: throw error;
+    case 'EACCES': console.log(`${bind} requires elevated privileges`);
+      process.exit(1);
+
+      break;
+    case 'EADDRINUSE': console.log(`${bind} is already in use`);
+      process.exit(1);
+      break; default: throw error;
   }
 };
 
 /**
  * Event listener for HTTP server "listening" event.
+ *
+ * @return {object} -
  */
 const onListening = () => {
   const addr = server.address();
