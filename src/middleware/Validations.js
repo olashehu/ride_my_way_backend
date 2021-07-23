@@ -198,7 +198,6 @@ export const offerExist = async (req, res, next) => {
   const { id } = req.params;
   try {
     const dataExistInHistory = await rideHistoryModel.select('*', ` WHERE "offerId" = ${id}`);
-    console.log(dataExistInHistory);
     if (dataExistInHistory.rowCount > 0) {
       return res.status(409).json({ message: " You can't join same offer", success: false });
     }

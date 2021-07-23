@@ -116,7 +116,7 @@ export const requestForRide = async (req, res) => {
     '${id}', '${driverId}', '${userId}', '${destination}', '${price}', 'pending'`;
     await rideHistoryModel.insertWithReturn(columns, values);
     res.status(201).json({
-      message: `Thank you for choosing ride-my-way driver ${firstName}`,
+      message: `Thank you for choosing ride-my-way at ${firstName}`,
       success: true
     });
   } catch (err) {
