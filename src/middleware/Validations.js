@@ -209,5 +209,23 @@ export const offerExist = async (req, res, next) => {
     return res.status(500).json({ message: error.message });
   }
 };
-
+/**
+ *
+ * @param {object} req - request
+ *
+ * @param {object} res - response
+ *
+ * @param {function} next - next middleware
+ *
+ * @returns {object} error - error object from joi
+ */
+export const ModifyOffer = async (req, res, next) => {
+  const offerSchema = Joi.object({
+    destination: Joi.string().min(5),
+    price: Joi.number().min(3)
+  });
+  const { error } = offerSchema.validate(req.body);
+  if (error) return res.status(400).json({ message: error.details[0].message, success: false });
+  return next();
+};
 export default assignToken;

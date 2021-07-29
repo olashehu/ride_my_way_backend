@@ -7,7 +7,12 @@ import {
 } from '../controllers/RideOffer';
 import { checkDriverDetails, DriverLogin } from '../middleware/AuthMiddleware';
 import {
-  isLoggedIn, validateCreateDriver, validateDestinationExist, validateId, validateProfile
+  isLoggedIn,
+  ModifyOffer,
+  validateCreateDriver,
+  validateDestinationExist,
+  validateId,
+  validateProfile
 } from '../middleware/Validations';
 
 const driverRoute = express.Router();
@@ -413,7 +418,7 @@ driverRoute.put('/driver-profile', isLoggedIn, validateProfile, editDriverProfil
 
 /**
  * @swagger
- * /v1/driver/ride-offer/:id:
+ * /v1/driver/ride-offer/{id}
  *   put:
  *     tags:
  *       - Offers & Authentication
@@ -445,7 +450,7 @@ driverRoute.put('/driver-profile', isLoggedIn, validateProfile, editDriverProfil
  *       500:
  *         description: Internal server error
  */
-driverRoute.put('/driver/ride-offer/:id', isLoggedIn, editOffers);
+driverRoute.put('/driver/ride-offer/:id', isLoggedIn, ModifyOffer, editOffers);
 
 /**
  * @swagger
