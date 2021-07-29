@@ -21,12 +21,12 @@ export const DriverRideHistoryPage = async (req, res) => {
     const data = await rideHistoryModel.select('*', `WHERE "driverId" = '${id}'`);
     if (data.rowCount === 0) {
       return res.status(404).json(
-        { data: [], message: 'no history, as you have not completed any ride', success: false }
+        { data: [], message: 'History not found', success: false }
       );
     }
     return res.status(200).json({ data: data.rows, success: true });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err.message, success: false });
   }
 };
 
@@ -45,10 +45,10 @@ export const UserRideHistoryPage = async (req, res) => {
     const data = await rideHistoryModel.select('*', `WHERE "userId" = '${id}'`);
     if (data.rowCount === 0) {
       return res.status(404)
-        .json({ data: [], message: 'no history, as you have not join any ride', success: false });
+        .json({ data: [], message: 'History not found', success: false });
     }
     res.status(200).json({ data: data.rows, success: true });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err.message, success: false });
   }
 };

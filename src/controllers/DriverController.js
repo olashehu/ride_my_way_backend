@@ -50,7 +50,7 @@ export const editDriverProfile = async (req, res) => {
     const data = await driverModel.update(req.body, `WHERE id = ${id}`);
     if (data.rowCount === 0) {
       return res.status(404).json(
-        { data: [], Message: 'driver data does not exist', success: false }
+        { data: [], Message: 'User not found', success: false }
       );
     }
     return res.status(200).json({ message: 'Profile updated successfully', success: true });
@@ -75,7 +75,7 @@ export const getAllDriver = async (req, res) => {
     total += data.rowCount;
     if (!data.rowCount) {
       return res.status(404).json(
-        { data: [], message: 'drivers data does not exist', success: false }
+        { data: [], message: 'User not found', success: false }
       );
     }
     return res.status(200).json({ data: data.rows, total, success: true });

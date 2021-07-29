@@ -34,7 +34,7 @@ export const addUsers = async (req, res) => {
     res.status(201).json({
       user,
       token,
-      message: 'User created successfully!'
+      message: 'Signed up successfully!'
     });
   } catch (err) {
     res.status(500).json({ message: err.message, success: false });
@@ -55,13 +55,13 @@ export const editUserProfile = async (req, res) => {
   try {
     const data = await userModel.update(req.body, `WHERE "id" = '${id}'`);
     if (data.rowCount === 0) {
-      return res.status(404).json({ data: [], message: 'no user to update' });
+      return res.status(404).json({ data: [], message: 'User not found', success: false });
     }
     return res.status(200).json(
       { message: 'Profile updated successfully', success: true }
     );
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err.message, success: false });
   }
 };
 
@@ -81,11 +81,11 @@ export const getAllUser = async (req, res) => {
     const data = await userModel.select('id, "firstName", "lastName", email');
     total += data.rowCount;
     if (!data.rowCount) {
-      return res.status(200).json({ data: [], message: 'user does not exist', success: false });
+      return res.status(404).json({ data: [], message: 'User not found', success: false });
     }
     return res.status(200).json({ data: data.rows, total, success: true });
   } catch (err) {
-    return res.status(500).json({ message: 'internal server error', success: false });
+    return res.status(500).json({ message: 'Internal server error', success: false });
   }
 };
 
@@ -105,7 +105,7 @@ export const requestForRide = async (req, res) => {
     const offer = await offerModel
       .select('id, "driverId", destination, price', ` WHERE "id" = '${offerId}'`);
     if (offer.rowCount === 0) {
-      return res.status(404).json({ data: [], message: 'this id has no offer', success: false });
+      return res.status(404).json({ data: [], message: 'Offer not found', success: false });
     }
 
     const {
@@ -116,7 +116,7 @@ export const requestForRide = async (req, res) => {
     '${id}', '${driverId}', '${userId}', '${destination}', '${price}', 'pending'`;
     await rideHistoryModel.insertWithReturn(columns, values);
     res.status(201).json({
-      message: `Thank you for choosing ride-my-way at ${firstName}`,
+      message: `Thank you for choosing RMW at ${firstName}`,
       success: true
     });
   } catch (err) {

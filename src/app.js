@@ -1,5 +1,7 @@
 import logger from 'morgan';
 import express from 'express';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 import cookieParser from 'cookie-parser';
 import passengerRoute from './routes/PassengerRoutes';
 import driverRoute from './routes/DriverRoutes';
@@ -11,6 +13,21 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use('/v1', passengerRoute);
 app.use('/v1', driverRoute);
+
+const options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Hello World',
+      version: '1.0.0',
+    },
+  },
+  apis: ['./src/routes/*.js'], // files containing annotations as above
+};
+
+const swaggerSpec = swaggerJsdoc(options);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 app.use((err, req, res) => res.status(400).json({ error: err.stack }));
 
 export default app;

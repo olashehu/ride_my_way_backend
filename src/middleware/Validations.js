@@ -148,7 +148,7 @@ export const validateDestinationExist = async (req, res, next) => {
       .select('*', ` WHERE destination = '${destination}'`);
     if (destinationExist.rowCount) {
       return res.status(409).json({
-        message: 'destination already exist, please enter a new destination!',
+        message: 'Destination already exist, please enter a new destination!',
         status: false
       });
     }
@@ -176,7 +176,7 @@ export const validateId = async (req, res, next) => {
   try {
     const isValidId = await offerModel.select('*', `WHERE "driverId" = '${id}'`);
     if (isValidId.rowCount === 0) {
-      return res.status(401).json({ message: 'unauthorize to delete this offer', success: false });
+      return res.status(401).json({ message: 'Unauthorize to delete this offer', success: false });
     }
     return next();
   } catch (error) {
@@ -199,7 +199,10 @@ export const offerExist = async (req, res, next) => {
   try {
     const dataExistInHistory = await rideHistoryModel.select('*', ` WHERE "offerId" = ${id}`);
     if (dataExistInHistory.rowCount > 0) {
-      return res.status(409).json({ message: " You can't join same offer", success: false });
+      return res.status(409).json({
+        message: " You can't join same ride you are currently on",
+        success: false
+      });
     }
     return next();
   } catch (error) {
