@@ -221,11 +221,11 @@ export const offerExist = async (req, res, next) => {
  */
 export const ModifyOffer = async (req, res, next) => {
   const offerSchema = Joi.object({
-    destination: Joi.string().min(5),
+    destination: Joi.string().min(3),
     price: Joi.number().min(3)
   });
   const { error } = offerSchema.validate(req.body);
-  if (error) return res.status(400).json({ message: error.details[0].message, success: false });
+  if (error) return res.status(400).json({ message: error.details[0], success: false });
   return next();
 };
 export default assignToken;
