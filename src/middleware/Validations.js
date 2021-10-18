@@ -2,6 +2,8 @@ import jwt from 'jsonwebtoken';
 import Joi from '@hapi/joi';
 import bcrypt from 'bcrypt';
 import Model from '../models/model';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const secretKey = process.env.SECRET_KEY;
 
@@ -20,7 +22,7 @@ const assignToken = (data) => {
   const tokes = jwt.sign({
     data
   }, secretKey, {
-    expiresIn: '24h'
+    expiresIn: '24h',
   });
   return tokes;
 };
@@ -40,11 +42,13 @@ const assignToken = (data) => {
  */
 export const isLoggedIn = (req, res, next) => {
   const token = req.headers.authorization;
+  
   let tokenValue;
   try {
     if (token) {
       [, tokenValue] = token.split(' ');
       const userData = jwt.verify(tokenValue, secretKey);
+      
       req.user = userData;
       if (userData) {
         next();
@@ -106,7 +110,6 @@ export const validateCreateDriver = async (req, res, next) => {
   const userSchema = Joi.object({
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
-    address: Joi.string().required(),
     phone: Joi.string().max(11).required(),
     email: Joi.string().email().required(),
     password: Joi.string().min(7).required(),
@@ -136,8 +139,9 @@ export const validateCreateDriver = async (req, res, next) => {
  * @returns {object} - object
  */
 export const validateDestinationExist = async (req, res, next) => {
-  const { destination } = req.body;
+  const { destination, location } = req.body;
   const schema = Joi.object({
+    location: Joi.string().required(),
     destination: Joi.string().required(),
     price: Joi.number().integer().required()
   });
@@ -145,10 +149,10 @@ export const validateDestinationExist = async (req, res, next) => {
   if (error) return res.status(400).json({ message: error.details[0].message });
   try {
     const destinationExist = await offerModel
-      .select('*', ` WHERE destination = '${destination}'`);
+      .select('*', ` WHERE destination = '${destination}' AND location = '${location}'`);
     if (destinationExist.rowCount) {
       return res.status(409).json({
-        message: 'Destination already exist, please enter a new destination!',
+        message: 'Destination OR Location already exist!',
         status: false
       });
     }
@@ -198,9 +202,10 @@ export const offerExist = async (req, res, next) => {
   const { id } = req.params;
   try {
     const dataExistInHistory = await rideHistoryModel.select('*', ` WHERE "offerId" = ${id}`);
+    // console.log(dataExistInHistory, 'root');
     if (dataExistInHistory.rowCount > 0) {
       return res.status(409).json({
-        message: " You can't join same ride you are currently on",
+        message: " You can't join same ride",
         success: false
       });
     }
@@ -221,6 +226,7 @@ export const offerExist = async (req, res, next) => {
  */
 export const ModifyOffer = async (req, res, next) => {
   const offerSchema = Joi.object({
+    location: Joi.string().min(3),
     destination: Joi.string().min(3),
     price: Joi.number().min(3)
   });

@@ -22,10 +22,9 @@ export const validateCreateUser = async (req, res, next) => {
   const userSchema = Joi.object({
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
-    address: Joi.string().required(),
     phone: Joi.string().max(11).required(),
     email: Joi.string().email().required(),
-    password: Joi.string().min(7).required()
+    password: Joi.string().min(6).required()
   });
   const { error } = userSchema.validate(req.body);
   if (error) {
@@ -55,14 +54,14 @@ export const checkUserDetails = async (req, res, next) => {
     const phoneNumberExists = await userModel.select('*', `WHERE "phone" = '${phone}'`);
     if (emailExists.rowCount) {
       return res.status(409).send({
-        message: 'Emai or Phone already exist',
+        message: 'Email already exist',
         success: false
       });
     }
 
     if (phoneNumberExists.rowCount) {
       return res.status(409).send({
-        message: 'Emai or Phone already exist',
+        message: 'Phone number already exist',
         success: false
       });
     }
@@ -96,20 +95,21 @@ export const loginUser = async (req, res) => {
     if (!passwordIsValid) {
       res.status(404).send({ message: 'Email or Password not found', success: false });
     }
-    const { id, firstName } = user.rows[0];
+    const { id, firstName, lastName } = user.rows[0];
     const userData = {
       id,
       firstName,
+      lastName,
       email
     };
     const token = assignToken(userData);
     return res.status(200).json({
-      message: 'Logged in successfully',
+      message: `Welcome back ${firstName} ${lastName}`,
       userData,
       token
     });
   } catch (err) {
-    res.send(err.message);
+    res.json({ message: err.message });
   }
 };
 
@@ -132,14 +132,14 @@ export const checkDriverDetails = async (req, res, next) => {
     const phoneNumberExists = await driverModel.select('*', `WHERE "phone" = '${phone}'`);
     if (emailExists.rowCount) {
       return res.status(409).send({
-        message: 'Email or Phone number already exists',
+        message: 'Email already exists',
         success: false
       });
     }
 
     if (phoneNumberExists.rowCount) {
       return res.status(409).send({
-        message: 'Email or Phone number already exists',
+        message: 'Phone number already exists',
         success: false
       });
     }
@@ -172,15 +172,16 @@ export const DriverLogin = async (req, res) => {
     if (!passwordIsValid) {
       res.status(404).send({ message: 'Password or Email not found', success: false });
     }
-    const { id, firstName } = user.rows[0];
+    const { id, firstName, lastName } = user.rows[0];
     const driver = {
       id,
       firstName,
+      lastName,
       email
     };
     const token = assignToken(driver);
     return res.status(200).json({
-      message: 'Logged in successfully',
+      message: `Welcome back ${firstName} ${lastName}`,
       driver,
       token
     });

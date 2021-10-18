@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mustache</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        html {
+            line-height: 1.5;
+        }
+
+        body {
+            background-color: azure;
+            font-size: 1.2rem;
+        }
+        div {
+            margin-top: 1rem;
+        }
+
+         a {
+            border: none;
+            background-color: chartreuse;
+            padding: .6rem 3rem;
+            margin-left: 3%;
+            font-weight: 500;
+            font-size: 1.4rem;
+            text-decoration: none;
+            color: black;
+        }
+        a:hover{
+            cursor: pointer;
+        }
+       
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Hi, {{name}}</h1>
+        <div style="font-size: 1.3rem; font-weight: 600; margin-bottom: 3%;">
+            You have a request from <b>{{user}}</b> to join<br/> 
+            the ride. Click on the link to log in to the site.
+        </div>
+        <a href="http://localhost:3000/v1/driver/login">Click me</a>
+    </div>
+</body>
+</html>

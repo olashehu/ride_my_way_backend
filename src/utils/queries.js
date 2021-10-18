@@ -3,7 +3,6 @@ CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   "firstName" VARCHAR NOT NULL,
   "lastName" VARCHAR NOT NULL,
-  address VARCHAR(100) NOT NULL,
   phone TEXT NOT NULL,
   email VARCHAR(50) NOT NULL,
   password VARCHAR(250) NOT NULL,
@@ -16,7 +15,6 @@ CREATE TABLE drivers (
   id SERIAL PRIMARY KEY,
   "firstName" VARCHAR(50) NOT NULL,
   "lastName" VARCHAR(50) NOT NULL,
-  address VARCHAR(100) NOT NULL,
   phone text NOT NULL,
   email VARCHAR(50) NOT NULL,
   "carModel" VARCHAR(50) NOT NULL,
@@ -31,6 +29,7 @@ export const createTableOffer = `
 CREATE TABLE ride_offer (
   id SERIAL PRIMARY KEY,
   "driverId" INT NOT NULL,
+  location VARCHAR(50) NOT NULL,
   destination VARCHAR(50) NOT NULL,
   price INT NOT NULL,
   "createdAt" TIMESTAMP DEFAULT NOW() NOT NULL
@@ -43,6 +42,7 @@ CREATE TABLE ride_history (
   "driverId" INT NOT NULL,
   "userId" INT NOT NULL,
   "offerId" INT NOT NULL,
+  location VARCHAR(50) NOT NULL,
   destination VARCHAR(50) NOT NULL,
   price INT NOT NULL,
   status VARCHAR NOT NULL,
