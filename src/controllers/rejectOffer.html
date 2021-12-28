@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: whitesmoke;
+        line-height: 1.8;
+        font-family: 'Times New Roman', Times, serif;
+      }
+
+      .wrapper {
+        width: 45%;
+        margin: 10% auto;
+        background-color: azure;
+      }
+      p {
+        font-size: 1.2rem;
+      }
+      .link {
+        font-size: 1.2rem;
+        margin-top: 1%;
+      }
+      .link > a {
+        text-decoration: none;
+        color: #f1f1f1;
+        background-color: blue;
+        padding: 8px 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <h1>Hi, {{name}}</h1>
+      <p class="contents">
+        Your offer to join the ride has been rejected due to our driver
+        currently on on another trip.<br />
+        Please, kindly choose another offer to join. Thank you for your patient.
+      </p>
+      <div class="link">
+        Click on the link to loggin to the site.
+        <a href="http://localhost:3000/v1/user/login">Click me</a>
+      </div>
+    </div>
+  </body>
+</html>

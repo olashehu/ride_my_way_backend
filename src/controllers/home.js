@@ -7,4 +7,6 @@ import { testEnvironmentVariable } from '../settings';
  *
  * @returns {obj} - it return a json object with a text
  */
-export const indexPage = (req, res) => res.status(200).json({ message: testEnvironmentVariable });
+export const indexPage = (req, res) => res.status(200).json(
+  { message: testEnvironmentVariable }
+);

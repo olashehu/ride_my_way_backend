@@ -2,6 +2,8 @@ import jwt from 'jsonwebtoken';
 import Joi from '@hapi/joi';
 import bcrypt from 'bcrypt';
 import Model from '../models/model';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const secretKey = process.env.SECRET_KEY;
 
@@ -20,7 +22,7 @@ const assignToken = (data) => {
   const tokes = jwt.sign({
     data
   }, secretKey, {
-    expiresIn: '24h'
+    expiresIn: '24h',
   });
   return tokes;
 };
@@ -40,6 +42,7 @@ const assignToken = (data) => {
  */
 export const isLoggedIn = (req, res, next) => {
   const token = req.headers.authorization;
+  
   let tokenValue;
   try {
     if (token) {
@@ -67,6 +70,7 @@ export const isLoggedIn = (req, res, next) => {
     });
   }
 };
+
 /**
  * @description - This method validate user request to edit information
  * It return json object if invalid otherwise, it call the next middleware
@@ -90,6 +94,7 @@ export const validateProfile = (req, res, next) => {
   }
   return next();
 };
+
 /**
  * @description - This method validate driver inputs, if inputs not valid, it return
  * json object, otherwise, it hash the password and call the next middleware
@@ -106,7 +111,6 @@ export const validateCreateDriver = async (req, res, next) => {
   const userSchema = Joi.object({
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
-    address: Joi.string().required(),
     phone: Joi.string().max(11).required(),
     email: Joi.string().email().required(),
     password: Joi.string().min(7).required(),
@@ -136,8 +140,9 @@ export const validateCreateDriver = async (req, res, next) => {
  * @returns {object} - object
  */
 export const validateDestinationExist = async (req, res, next) => {
-  const { destination } = req.body;
+  const { destination, location } = req.body;
   const schema = Joi.object({
+    location: Joi.string().required(),
     destination: Joi.string().required(),
     price: Joi.number().integer().required()
   });
@@ -145,10 +150,10 @@ export const validateDestinationExist = async (req, res, next) => {
   if (error) return res.status(400).json({ message: error.details[0].message });
   try {
     const destinationExist = await offerModel
-      .select('*', ` WHERE destination = '${destination}'`);
+      .select('*', ` WHERE destination = '${destination}' AND location = '${location}'`);
     if (destinationExist.rowCount) {
       return res.status(409).json({
-        message: 'destination already exist, please enter a new destination!',
+        message: 'Destination OR Location already exist!',
         status: false
       });
     }
@@ -176,7 +181,7 @@ export const validateId = async (req, res, next) => {
   try {
     const isValidId = await offerModel.select('*', `WHERE "driverId" = '${id}'`);
     if (isValidId.rowCount === 0) {
-      return res.status(401).json({ message: 'unauthorize to delete this offer', success: false });
+      return res.status(401).json({ message: 'Unauthorize to delete this offer', success: false });
     }
     return next();
   } catch (error) {
@@ -198,13 +203,36 @@ export const offerExist = async (req, res, next) => {
   const { id } = req.params;
   try {
     const dataExistInHistory = await rideHistoryModel.select('*', ` WHERE "offerId" = ${id}`);
+    // console.log(dataExistInHistory, 'root');
     if (dataExistInHistory.rowCount > 0) {
-      return res.status(409).json({ message: " You can't join same offer", success: false });
+      return res.status(409).json({
+        message: " You can't join same ride",
+        success: false
+      });
     }
     return next();
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
-
+/**
+ *
+ * @param {object} req - request
+ *
+ * @param {object} res - response
+ *
+ * @param {function} next - next middleware
+ *
+ * @returns {object} error - error object from joi
+ */
+export const ModifyOffer = async (req, res, next) => {
+  const offerSchema = Joi.object({
+    location: Joi.string().min(3),
+    destination: Joi.string().min(3),
+    price: Joi.number().min(3)
+  });
+  const { error } = offerSchema.validate(req.body);
+  if (error) return res.status(400).json({ message: error.details[0], success: false });
+  return next();
+};
 export default assignToken;
