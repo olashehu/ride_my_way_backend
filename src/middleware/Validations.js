@@ -48,7 +48,6 @@ export const isLoggedIn = (req, res, next) => {
     if (token) {
       [, tokenValue] = token.split(' ');
       const userData = jwt.verify(tokenValue, secretKey);
-      
       req.user = userData;
       if (userData) {
         next();
@@ -71,6 +70,7 @@ export const isLoggedIn = (req, res, next) => {
     });
   }
 };
+
 /**
  * @description - This method validate user request to edit information
  * It return json object if invalid otherwise, it call the next middleware
@@ -94,6 +94,7 @@ export const validateProfile = (req, res, next) => {
   }
   return next();
 };
+
 /**
  * @description - This method validate driver inputs, if inputs not valid, it return
  * json object, otherwise, it hash the password and call the next middleware
