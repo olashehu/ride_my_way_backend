@@ -125,7 +125,7 @@ export const requestForRide = async (req, res) => {
   try {
     const offer = await offerModel.select('id, "driverId", location, destination, price', ` WHERE "id" = '${offerId}'`);
     if (offer.rowCount === 0) {
-      return res.status(404).json({ data: [], message: 'Offer not found', success: false });
+      return res.status(404).json({ data: [], message: 'Offer not available', success: false });
     }
 
     const {

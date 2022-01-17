@@ -1,3 +1,5 @@
+
+
 import jwt from 'jsonwebtoken';
 import Joi from '@hapi/joi';
 import bcrypt from 'bcrypt';
@@ -19,11 +21,15 @@ const rideHistoryModel = new Model('ride_history');
  * user/driver information.
  */
 const assignToken = (data) => {
-  const tokes = jwt.sign({
-    data
-  }, secretKey, {
-    expiresIn: '24h',
-  });
+  const tokes = jwt.sign(
+    {
+      data,
+    },
+    secretKey,
+    {
+      expiresIn: '24h',
+    }
+  );
   return tokes;
 };
 
@@ -42,7 +48,7 @@ const assignToken = (data) => {
  */
 export const isLoggedIn = (req, res, next) => {
   const token = req.headers.authorization;
-  
+
   let tokenValue;
   try {
     if (token) {
@@ -54,19 +60,19 @@ export const isLoggedIn = (req, res, next) => {
       } else {
         res.status(401).send({
           status: false,
-          message: 'Authentication token is invalid or expired'
+          message: 'Authentication token is invalid or expired',
         });
       }
     } else {
       res.status(401).send({
         status: false,
-        message: 'Authentication token does not exist'
+        message: 'Authentication token does not exist',
       });
     }
   } catch (error) {
     res.status(401).send({
       status: false,
-      message: 'Authentication token is invalid or expired'
+      message: 'Authentication token is invalid or expired',
     });
   }
 };
@@ -86,7 +92,7 @@ export const isLoggedIn = (req, res, next) => {
 export const validateProfile = (req, res, next) => {
   const schema = Joi.object({
     firstName: Joi.string().min(3),
-    lastName: Joi.string().min(3)
+    lastName: Joi.string().min(3),
   });
   const { error } = schema.validate(req.body);
   if (error) {
@@ -114,13 +120,12 @@ export const validateCreateDriver = async (req, res, next) => {
     phone: Joi.string().max(11).required(),
     email: Joi.string().email().required(),
     password: Joi.string().min(7).required(),
-    carModel: Joi.string().required(),
-    modelYear: Joi.number().min(2005).max(2021).required(),
-    licencePlate: Joi.string().required()
   });
   const { error } = userSchema.validate(req.body);
   if (error) {
-    return res.status(400).json({ message: error.details[0].message, success: false });
+    return res
+      .status(400)
+      .json({ message: error.details[0].message, success: false });
   }
   const { password } = req.body;
   req.body.password = await bcrypt.hash(password, 10);
@@ -144,17 +149,19 @@ export const validateDestinationExist = async (req, res, next) => {
   const schema = Joi.object({
     location: Joi.string().required(),
     destination: Joi.string().required(),
-    price: Joi.number().integer().required()
+    price: Joi.number().integer().required(),
   });
   const { error } = schema.validate(req.body);
   if (error) return res.status(400).json({ message: error.details[0].message });
   try {
-    const destinationExist = await offerModel
-      .select('*', ` WHERE destination = '${destination}' AND location = '${location}'`);
+    const destinationExist = await offerModel.select(
+      '*',
+      ` WHERE destination = '${destination}' AND location = '${location}'`
+    );
     if (destinationExist.rowCount) {
       return res.status(409).json({
         message: 'Destination OR Location already exist!',
-        status: false
+        status: false,
       });
     }
     return next();
@@ -177,11 +184,18 @@ export const validateDestinationExist = async (req, res, next) => {
  * @returns {object} - json object
  */
 export const validateId = async (req, res, next) => {
-  const { data: { id } } = req.user;
+  const {
+    data: { id },
+  } = req.user;
   try {
-    const isValidId = await offerModel.select('*', `WHERE "driverId" = '${id}'`);
+    const isValidId = await offerModel.select(
+      '*',
+      `WHERE "driverId" = '${id}'`
+    );
     if (isValidId.rowCount === 0) {
-      return res.status(401).json({ message: 'Unauthorize to delete this offer', success: false });
+      return res
+        .status(401)
+        .json({ message: 'Unauthorize to delete this offer', success: false });
     }
     return next();
   } catch (error) {
@@ -202,12 +216,15 @@ export const validateId = async (req, res, next) => {
 export const offerExist = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const dataExistInHistory = await rideHistoryModel.select('*', ` WHERE "offerId" = ${id}`);
+    const dataExistInHistory = await rideHistoryModel.select(
+      '*',
+      ` WHERE "offerId" = ${id}`
+    );
     // console.log(dataExistInHistory, 'root');
     if (dataExistInHistory.rowCount > 0) {
       return res.status(409).json({
         message: " You can't join same ride",
-        success: false
+        success: false,
       });
     }
     return next();
@@ -229,10 +246,11 @@ export const ModifyOffer = async (req, res, next) => {
   const offerSchema = Joi.object({
     location: Joi.string().min(3),
     destination: Joi.string().min(3),
-    price: Joi.number().min(3)
+    price: Joi.number().min(3),
   });
   const { error } = offerSchema.validate(req.body);
-  if (error) return res.status(400).json({ message: error.details[0], success: false });
+  if (error)
+    return res.status(400).json({ message: error.details[0], success: false });
   return next();
 };
 export default assignToken;
