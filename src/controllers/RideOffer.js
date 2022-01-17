@@ -175,7 +175,7 @@ export const getAllOffer = async (req, res) => {
     total += data.rowCount;
     if (data.rowCount === 0) {
       return res.status(404).json(
-        { data: [], message: 'Offer not found', success: false }
+        { data: [], message: 'Offer not available', success: false }
       );
     }
     return res.status(200).json({ data: data.rows, total, success: true, });
